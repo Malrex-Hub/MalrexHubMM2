@@ -1,930 +1,1126 @@
--- Elite Hub | Blox Fruits | by Marcus
--- discord.gg/Pq2dsdfHhE
+-- ╔══════════════════════════════════════════╗
+-- ║   ELITE HUB v1.0.0  |  Blox Fruits        ║
+-- ║   Works with: Delta, Hydrogen,           ║
+-- ║   Codex, Arceus X, Executor X           ║
+-- ║   discord.gg/EmsMsHZCVH                 ║
+-- ╚══════════════════════════════════════════╝
 
-local Players          = game:GetService("Players")
-local RunService       = game:GetService("RunService")
-local TweenService     = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-local WS               = game:GetService("Workspace")
-local RS               = game:GetService("ReplicatedStorage")
-local CoreGui          = game:GetService("CoreGui")
-local LP               = Players.LocalPlayer
+-- SERVICES
+local Plr  = game:GetService("Players")
+local RS   = game:GetService("RunService")
+local UIS  = game:GetService("UserInputService")
+local TS   = game:GetService("TweenService")
+local VU   = game:GetService("VirtualUser")
+local Lit  = game:GetService("Lighting")
+local LP   = Plr.LocalPlayer
+local PG   = LP:WaitForChild("PlayerGui")
+local Cam  = workspace.CurrentCamera
 
--- ================================================
--- SAFE PARENT
--- ================================================
-local function safeParent(gui)
-    -- Try gethui() first (Delta/mobile executor specific)
-    if gethui then
-        pcall(function() gui.Parent = gethui() end)
-        if gui.Parent then return end
-    end
-    -- Try CoreGui
-    pcall(function() gui.Parent = game:GetService("CoreGui") end)
-    if gui.Parent then return end
-    -- Fallback to PlayerGui
-    gui.Parent = LP:WaitForChild("PlayerGui")
-end
-
--- ================================================
--- LOADING SCREEN
--- ================================================
-local loadGui = Instance.new("ScreenGui")
-loadGui.Name = "EliteLoad"
-loadGui.ResetOnSpawn = false
-safeParent(loadGui)
-
-local loadBG = Instance.new("Frame")
-loadBG.Size = UDim2.new(1,0,1,0)
-loadBG.BackgroundColor3 = Color3.fromRGB(10,10,16)
-loadBG.BorderSizePixel = 0
-loadBG.Parent = loadGui
-
-local function mkLbl(parent, text, size, pos, color, font, xa, ts)
-    local l = Instance.new("TextLabel")
-    l.Size = size l.Position = pos
-    l.BackgroundTransparency = 1
-    l.Text = text l.TextColor3 = color
-    l.TextSize = ts or 13
-    l.Font = font or Enum.Font.Gotham
-    l.TextXAlignment = xa or Enum.TextXAlignment.Center
-    l.TextTransparency = 1
-    l.Parent = parent
-    return l
-end
-
-local loadTitle = mkLbl(loadBG,"ELITE HUB",UDim2.new(0,300,0,48),UDim2.new(0.5,-150,0.35,0),Color3.fromRGB(240,240,240),Enum.Font.GothamBold,Enum.TextXAlignment.Center,36)
-local loadSub = mkLbl(loadBG,"by Marcus",UDim2.new(0,300,0,22),UDim2.new(0.5,-150,0.47,0),Color3.fromRGB(130,70,255),Enum.Font.Gotham,Enum.TextXAlignment.Center,14)
-local loadDisc = mkLbl(loadBG,"discord.gg/Pq2dsdfHhE",UDim2.new(0,300,0,16),UDim2.new(0.5,-150,0.8,0),Color3.fromRGB(80,80,100),Enum.Font.Gotham,Enum.TextXAlignment.Center,11)
-
-local barBG = Instance.new("Frame")
-barBG.Size = UDim2.new(0,300,0,4)
-barBG.Position = UDim2.new(0.5,-150,0.57,0)
-barBG.BackgroundColor3 = Color3.fromRGB(28,28,42)
-barBG.BorderSizePixel = 0 barBG.Parent = loadBG
-local _=Instance.new("UICorner") _.CornerRadius=UDim.new(1,0) _.Parent=barBG
-
-local barFill = Instance.new("Frame")
-barFill.Size = UDim2.new(0,0,1,0)
-barFill.BackgroundColor3 = Color3.fromRGB(130,70,255)
-barFill.BorderSizePixel = 0 barFill.Parent = barBG
-local _=Instance.new("UICorner") _.CornerRadius=UDim.new(1,0) _.Parent=barFill
-
-local loadStat = Instance.new("TextLabel")
-loadStat.Size = UDim2.new(0,300,0,18) loadStat.Position = UDim2.new(0.5,-150,0.61,0)
-loadStat.BackgroundTransparency=1 loadStat.Text="Loading..."
-loadStat.TextColor3=Color3.fromRGB(150,150,170) loadStat.TextSize=11
-loadStat.Font=Enum.Font.Gotham loadStat.TextXAlignment=Enum.TextXAlignment.Left
-loadStat.TextTransparency=1 loadStat.Parent=loadBG
-
-TweenService:Create(loadTitle,TweenInfo.new(0.5),{TextTransparency=0}):Play()
-TweenService:Create(loadSub,TweenInfo.new(0.5),{TextTransparency=0}):Play()
-TweenService:Create(loadDisc,TweenInfo.new(0.5),{TextTransparency=0}):Play()
-TweenService:Create(loadStat,TweenInfo.new(0.5),{TextTransparency=0}):Play()
-task.wait(0.4)
-
-for _, s in ipairs({
-    {t="Initializing...",p=0.2},
-    {t="Loading features...",p=0.5},
-    {t="Building UI...",p=0.75},
-    {t="Done!",p=1.0},
-}) do
-    loadStat.Text = s.t
-    TweenService:Create(barFill,TweenInfo.new(0.4,Enum.EasingStyle.Quad),{Size=UDim2.new(s.p,0,1,0)}):Play()
-    task.wait(0.45)
-end
-task.wait(0.25)
-TweenService:Create(loadBG,TweenInfo.new(0.45),{BackgroundTransparency=1}):Play()
-for _,v in ipairs(loadBG:GetDescendants()) do
-    if v:IsA("TextLabel") then TweenService:Create(v,TweenInfo.new(0.4),{TextTransparency=1}):Play()
-    elseif v:IsA("Frame") then TweenService:Create(v,TweenInfo.new(0.4),{BackgroundTransparency=1}):Play() end
-end
-task.wait(0.5)
-loadGui:Destroy()
-
--- ================================================
--- SEA DETECTION
--- ================================================
-local PlaceId = game.PlaceId
-local Sea = 1
-if PlaceId == 4442272183 then Sea = 2
-elseif PlaceId == 7449423635 then Sea = 3 end
-
--- ================================================
--- STATE
--- ================================================
-local State = {
-    AutoFarm=false, AutoQuest=false, AutoStats=false,
-    FruitSniper=false, ESP=false,
-    FarmMob="", UseSkills=true, AutoEat=true, HealthPct=30,
-    StatChoice="Melee", FloatAnim=true,
+-- ════════════════════════════════════════════
+--  CONFIG
+-- ════════════════════════════════════════════
+local CFG = {
+    -- Farm
+    AutoFarm      = false,
+    FarmMethod    = "Melee",
+    TargetMob     = "Gorilla",
+    FarmRadius    = 200,
+    -- Boss
+    AutoBoss      = false,
+    SelectedBoss  = "Gorilla King",
+    -- TP
+    TPBypass      = true,
+    TPFruit       = false,
+    -- Combat
+    AutoMelee     = false,
+    AutoSword     = false,
+    AutoGun       = false,
+    AutoFruit     = false,
+    FruitSkill    = "Z",
+    -- Store
+    AutoStore     = false,
+    StoreItem     = "All",
+    AutoRaid      = false,
+    AutoRaidBoss  = false,
+    SelectedRaid  = "Flame",
+    -- Mastery
+    AutoMastery   = false,
+    MasteryTarget = "Sword",
+    -- Player
+    InfJump       = false,
+    -- Misc
+    AntiAFK       = true,
+    FPSShow       = true,
+    AutoRespawn   = true,
+    Fullbright    = false,
+    -- Settings
+    HideKey       = "RightShift",
+    FarmDelay     = 0.15,
+    TPDelay       = 0.3,
+    SafeTP        = true,
 }
-local ESPObjects = {}
 
--- ================================================
--- CHARACTER
--- ================================================
-local function getChar() return LP.Character end
-local function getRoot() local c=getChar() return c and c:FindFirstChild("HumanoidRootPart") end
-local function getHum() local c=getChar() return c and c:FindFirstChildOfClass("Humanoid") end
+-- ════════════════════════════════════════════
+--  THEME
+-- ════════════════════════════════════════════
+local C = {
+    BG      = Color3.fromRGB(10, 9, 20),
+    Panel   = Color3.fromRGB(18, 17, 34),
+    Accent  = Color3.fromRGB(160, 40, 240),
+    AccDark = Color3.fromRGB(90, 15, 160),
+    Glow    = Color3.fromRGB(210, 90, 255),
+    Text    = Color3.fromRGB(230, 228, 255),
+    Sub     = Color3.fromRGB(140, 130, 170),
+    Green   = Color3.fromRGB(50, 215, 100),
+    Red     = Color3.fromRGB(215, 55, 65),
+    Gold    = Color3.fromRGB(255, 195, 45),
+    Discord = Color3.fromRGB(88, 101, 242),
+}
 
--- ================================================
--- TELEPORT WITH ANTI-CHEAT HOLD
--- ================================================
-local tpConn
-local function tpTo(cf, hold)
+-- ════════════════════════════════════════════
+--  HELPERS
+-- ════════════════════════════════════════════
+local function tw(obj, props, t, sty, dir)
+    TS:Create(obj, TweenInfo.new(t or .25, sty or Enum.EasingStyle.Quart, dir or Enum.EasingDirection.Out), props):Play()
+end
+
+local function mk(cls, props)
+    local o = Instance.new(cls)
+    for k,v in pairs(props) do
+        if k ~= "Parent" then o[k] = v end
+    end
+    if props.Parent then o.Parent = props.Parent end
+    return o
+end
+
+local function corner(obj, r)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, r or 8)
+    c.Parent = obj
+    return c
+end
+
+local function stroke(obj, col, thick, trans)
+    local s = Instance.new("UIStroke")
+    s.Color = col or C.Accent
+    s.Thickness = thick or 1.2
+    s.Transparency = trans or 0.35
+    s.Parent = obj
+end
+
+local function getChar()   return LP.Character end
+local function getHum()    local c=getChar() return c and c:FindFirstChildOfClass("Humanoid") end
+local function getRoot()   local c=getChar() return c and c:FindFirstChild("HumanoidRootPart") end
+local function isAlive()   local h=getHum() return h and h.Health > 0 end
+
+local function safeTp(pos)
     local root = getRoot()
     if not root then return end
-    root.CFrame = cf
-    if hold and hold > 0 then
-        if tpConn then tpConn:Disconnect() end
-        local t = 0
-        tpConn = RunService.Heartbeat:Connect(function(dt)
-            t = t + dt
-            local r = getRoot()
-            if r then r.CFrame = cf end
-            if t >= hold then tpConn:Disconnect() tpConn = nil end
-        end)
+    if CFG.SafeTP and CFG.TPBypass then
+        -- Delta-compatible bypass: small steps to avoid detection
+        local steps = 5
+        local origin = root.CFrame.Position
+        local target = pos + Vector3.new(0, 4, 0)
+        for i = 1, steps do
+            local alpha = i / steps
+            root.CFrame = CFrame.new(origin:Lerp(target, alpha))
+            task.wait(CFG.TPDelay / steps)
+        end
+    else
+        root.CFrame = CFrame.new(pos + Vector3.new(0, 4, 0))
     end
 end
 
--- ================================================
--- MOB DATA
--- ================================================
-local MobData = {
-    [1]={
-        {Name="Bandit",          Quest="BanditQuest",    Level=1,   QCF=CFrame.new(-1254,5,-1989),  MCF=CFrame.new(-1228,6,-1920)},
-        {Name="Monkey",          Quest="MonkeyQuest",    Level=10,  QCF=CFrame.new(-1376,4,-795),   MCF=CFrame.new(-1357,5,-841)},
-        {Name="Pirate",          Quest="PirateQuest",    Level=30,  QCF=CFrame.new(944,5,4417),     MCF=CFrame.new(974,6,4379)},
-        {Name="Brute",           Quest="BruteQuest",     Level=50,  QCF=CFrame.new(944,5,4417),     MCF=CFrame.new(998,6,4355)},
-        {Name="Desert Bandit",   Quest="DesertQuest",    Level=75,  QCF=CFrame.new(893,6,4393),     MCF=CFrame.new(897,6,4360)},
-        {Name="Desert Officer",  Quest="DesertQuest",    Level=90,  QCF=CFrame.new(893,6,4393),     MCF=CFrame.new(1547,14,4381)},
-        {Name="Snow Bandit",     Quest="SnowQuest",      Level=100, QCF=CFrame.new(1387,87,-1298),  MCF=CFrame.new(1356,105,-1328)},
-        {Name="Snowman",         Quest="SnowQuest",      Level=120, QCF=CFrame.new(1387,87,-1298),  MCF=CFrame.new(1424,126,-1308)},
-        {Name="Warrior",         Quest="WarriorQuest",   Level=150, QCF=CFrame.new(-3157,10,1098),  MCF=CFrame.new(-3100,7,1090)},
-        {Name="Gladiator",       Quest="GladiatorQuest", Level=175, QCF=CFrame.new(-3157,10,1098),  MCF=CFrame.new(-3200,10,1080)},
-        {Name="Fishman",         Quest="FishmanQuest",   Level=200, QCF=CFrame.new(-3047,-19,3812), MCF=CFrame.new(-2980,-30,3900)},
-        {Name="Fishman Warrior", Quest="FishmanQuest",   Level=225, QCF=CFrame.new(-3047,-19,3812), MCF=CFrame.new(-3060,-35,3830)},
-        {Name="Mushroom",        Quest="MushroomQuest",  Level=300, QCF=CFrame.new(-4640,5,280),    MCF=CFrame.new(-4620,5,350)},
-        {Name="Gorilla",         Quest="GorillaQuest",   Level=350, QCF=CFrame.new(-4680,5,220),    MCF=CFrame.new(-4700,5,180)},
-        {Name="LumberJack",      Quest="LumberQuest",    Level=375, QCF=CFrame.new(4880,5,555),     MCF=CFrame.new(4900,6,600)},
-    },
-    [2]={
-        {Name="Raider",              Quest="RaiderQuest",  Level=700,  QCF=CFrame.new(-2076,74,1836),  MCF=CFrame.new(-2100,75,1900)},
-        {Name="Mercenary",           Quest="MercQuest",    Level=750,  QCF=CFrame.new(-2076,74,1836),  MCF=CFrame.new(-2050,75,1860)},
-        {Name="Marine (S2)",         Quest="MarineQuest",  Level=800,  QCF=CFrame.new(-2900,11,1314),  MCF=CFrame.new(-2920,11,1380)},
-        {Name="Zombie",              Quest="ZombieQuest",  Level=850,  QCF=CFrame.new(-2390,30,1500),  MCF=CFrame.new(-2400,30,1560)},
-        {Name="Vampire",             Quest="VampireQuest", Level=875,  QCF=CFrame.new(-2390,30,1500),  MCF=CFrame.new(-2380,35,1480)},
-        {Name="Snow Trooper",        Quest="SnowTrooper",  Level=900,  QCF=CFrame.new(-2600,145,700),  MCF=CFrame.new(-2580,145,760)},
-        {Name="Yeti",                Quest="YetiQuest",    Level=950,  QCF=CFrame.new(-2600,145,700),  MCF=CFrame.new(-2620,145,680)},
-        {Name="Dragon Crew Soldier", Quest="DragonQuest",  Level=1100, QCF=CFrame.new(-5500,15,3000),  MCF=CFrame.new(-5520,15,3060)},
-        {Name="Wano Samurai",        Quest="WanoQuest",    Level=1250, QCF=CFrame.new(-5100,30,3600),  MCF=CFrame.new(-5080,35,3580)},
-    },
-    [3]={
-        {Name="Pirate Millionaire",  Quest="PMQuest",  Level=1500, QCF=CFrame.new(-14360,120,1640), MCF=CFrame.new(-14380,120,1700)},
-        {Name="Forest Pirate",       Quest="FPQuest",  Level=1575, QCF=CFrame.new(-14360,120,1640), MCF=CFrame.new(-14340,120,1620)},
-        {Name="Royal Soldier",       Quest="RSQuest",  Level=1675, QCF=CFrame.new(-12800,115,840),  MCF=CFrame.new(-12780,115,820)},
-        {Name="Gamma Zombie",        Quest="GZQuest",  Level=1700, QCF=CFrame.new(-12200,100,2600), MCF=CFrame.new(-12220,100,2660)},
-        {Name="Haunted Pirate",      Quest="HPQuest",  Level=1875, QCF=CFrame.new(-9800,95,1700),   MCF=CFrame.new(-9780,95,1680)},
-        {Name="Reborn Skeleton",     Quest="RBQuest",  Level=1925, QCF=CFrame.new(-9200,90,2400),   MCF=CFrame.new(-9220,90,2460)},
-        {Name="Ice Cream Chef",      Quest="ICQuest",  Level=2275, QCF=CFrame.new(-7200,70,4800),   MCF=CFrame.new(-7220,70,4860)},
-        {Name="Ice Cream Commander", Quest="ICCQuest", Level=2325, QCF=CFrame.new(-7200,70,4800),   MCF=CFrame.new(-7180,70,4780)},
-    },
-}
-
-local TeleportData = {
-    [1]={
-        {Name="Starter Island",  CF=CFrame.new(-1254,5,-1989)},
-        {Name="Marine Starter",  CF=CFrame.new(-1376,4,-795)},
-        {Name="Jungle",          CF=CFrame.new(-1660,12,236)},
-        {Name="Pirate Village",  CF=CFrame.new(944,5,4350)},
-        {Name="Desert",          CF=CFrame.new(893,6,4390)},
-        {Name="Snow Island",     CF=CFrame.new(1390,88,-1298)},
-        {Name="Marine Fortress", CF=CFrame.new(-3160,10,1100)},
-        {Name="Skylands",        CF=CFrame.new(-4640,450,280)},
-        {Name="Fishman Island",  CF=CFrame.new(-3050,-10,3800)},
-        {Name="Fountain City",   CF=CFrame.new(-4670,5,250)},
-    },
-    [2]={
-        {Name="Kingdom of Rose", CF=CFrame.new(-2076,74,1836)},
-        {Name="Graveyard",       CF=CFrame.new(-2390,30,1500)},
-        {Name="Snow Mountain",   CF=CFrame.new(-2600,145,700)},
-        {Name="Magma Village",   CF=CFrame.new(-4180,24,3100)},
-        {Name="Wano",            CF=CFrame.new(-5100,30,3600)},
-        {Name="Hydra Island",    CF=CFrame.new(-5500,15,3000)},
-    },
-    [3]={
-        {Name="Port Town",       CF=CFrame.new(-14360,120,1640)},
-        {Name="Floating Turtle", CF=CFrame.new(-12800,115,840)},
-        {Name="Haunted Castle",  CF=CFrame.new(-9800,95,1700)},
-        {Name="Sea of Treats",   CF=CFrame.new(-7200,70,4800)},
-        {Name="Mirage Island",   CF=CFrame.new(-8000,80,3500)},
-    },
-}
-
--- ================================================
--- ATTACK / SKILLS
--- ================================================
-local function getMobs()
-    local list,enemies={},WS:FindFirstChild("Enemies")
-    if not enemies then return list end
-    for _,v in ipairs(enemies:GetChildren()) do
-        local h=v:FindFirstChildOfClass("Humanoid")
-        local r=v:FindFirstChild("HumanoidRootPart")
-        if h and r and h.Health>0 then table.insert(list,v) end
-    end
-    return list
-end
-
-local function getNearestMob(name)
-    local root=getRoot()
+local function getNearestMob(name, radius)
+    local root = getRoot()
     if not root then return nil end
-    local nearest,dist=nil,math.huge
-    for _,mob in ipairs(getMobs()) do
-        local match=name=="" or mob.Name:lower():find(name:lower(),1,true)
-        if match then
-            local d=(mob.HumanoidRootPart.Position-root.Position).Magnitude
-            if d<dist then dist=d nearest=mob end
+    local best, bestDist = nil, radius or CFG.FarmRadius
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("Model") and obj.Name:lower():find(name:lower()) then
+            local hum = obj:FindFirstChildOfClass("Humanoid")
+            local hrp = obj:FindFirstChild("HumanoidRootPart")
+            if hum and hrp and hum.Health > 0 then
+                local d = (hrp.Position - root.Position).Magnitude
+                if d < bestDist then best, bestDist = obj, d end
+            end
         end
     end
-    return nearest
+    return best
 end
 
-local function useSkills()
-    for _,key in ipairs({"z","x","c","v","f"}) do
-        pcall(function() keypress(string.byte(key)) task.wait(0.08) keyrelease(string.byte(key)) end)
-        task.wait(0.05)
+local function getFruits()
+    local fruits = {}
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("Model") or obj:IsA("Part") then
+            local n = obj.Name:lower()
+            if n:find("fruit") or n:find("df_") or n:find("devil") then
+                local pos = obj:IsA("Model") and obj:FindFirstChild("Handle") or obj
+                if pos and pos:IsA("BasePart") then
+                    table.insert(fruits, {model = obj, pos = pos.Position, name = obj.Name})
+                end
+            end
+        end
     end
+    return fruits
 end
 
-local function attackMob(mob)
-    if not mob or not mob.Parent then return end
-    pcall(function() mouse1press() task.wait(0.05) mouse1release() end)
-    pcall(function() RS.Remotes.CommF_:InvokeServer("attackEnemy",mob) end)
-end
+-- ════════════════════════════════════════════
+--  NOTIFICATION
+-- ════════════════════════════════════════════
+local notifStack = {}
 
--- ================================================
--- QUEST
--- ================================================
-local lastQuest,lastQuestTime="",0
-local function acceptQuest(mobData)
-    if not mobData then return end
-    if lastQuest==mobData.Quest and tick()-lastQuestTime<90 then return end
-    tpTo(mobData.QCF,1.5) task.wait(1.6)
-    pcall(function() RS.Remotes.CommF_:InvokeServer("startQuest",mobData.Quest,mobData.Level) end)
-    lastQuest=mobData.Quest lastQuestTime=tick()
-    task.wait(0.3)
-end
+local function notify(title, msg, dur)
+    dur = dur or 4
+    local sg = PG:FindFirstChild("_EHNotif") or mk("ScreenGui", {
+        Name = "_EHNotif", ResetOnSpawn = false,
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = PG
+    })
 
--- ================================================
--- FARM LOOP
--- ================================================
+    -- shift existing
+    for _, f in pairs(notifStack) do
+        if f and f.Parent then
+            tw(f, {Position = UDim2.new(f.Position.X.Scale, f.Position.X.Offset,
+                f.Position.Y.Scale, f.Position.Y.Offset - 90)}, .2)
+        end
+    end
 
--- Fly to position by repeatedly setting CFrame over time
-local function flyTo(targetCF, speed)
-    speed = speed or 0.15
-    local root = getRoot()
-    if not root then return end
-    -- Disable falling while moving
-    local hum = getHum()
-    local prevState
-    pcall(function()
-        prevState = hum.PlatformStand
-        hum.PlatformStand = true
+    local f = mk("Frame", {
+        Size = UDim2.new(0,290,0,74),
+        Position = UDim2.new(1,10,1,-90),
+        BackgroundColor3 = C.Panel,
+        BorderSizePixel = 0, Parent = sg
+    })
+    corner(f, 10)
+    stroke(f, C.Accent, 1, 0.4)
+
+    mk("Frame", {Size=UDim2.new(0,3,1,0), BackgroundColor3=C.Accent, BorderSizePixel=0, Parent=f})
+    corner(mk("Frame", {Size=UDim2.new(0,3,1,0), BackgroundColor3=C.Accent, BorderSizePixel=0, Parent=f}), 3)
+
+    mk("TextLabel", {
+        Size=UDim2.new(1,-16,0,20), Position=UDim2.new(0,12,0,8),
+        BackgroundTransparency=1, Text=title, Font=Enum.Font.GothamBold,
+        TextSize=12, TextColor3=C.Glow, TextXAlignment=Enum.TextXAlignment.Left, Parent=f
+    })
+    mk("TextLabel", {
+        Size=UDim2.new(1,-16,0,34), Position=UDim2.new(0,12,0,28),
+        BackgroundTransparency=1, Text=msg, Font=Enum.Font.Gotham,
+        TextSize=11, TextColor3=C.Text, TextXAlignment=Enum.TextXAlignment.Left,
+        TextWrapped=true, Parent=f
+    })
+
+    table.insert(notifStack, f)
+    tw(f, {Position=UDim2.new(1,-300,1,-90)}, .35, Enum.EasingStyle.Back)
+
+    task.delay(dur, function()
+        tw(f, {Position=UDim2.new(1,10,1,-90)}, .3)
+        task.wait(.35)
+        local idx = table.find(notifStack, f)
+        if idx then table.remove(notifStack, idx) end
+        pcall(function() f:Destroy() end)
     end)
-    local startPos = root.Position
-    local endPos = targetCF.Position
-    local dist = (endPos - startPos).Magnitude
-    local steps = math.max(1, math.floor(dist / 20))
-    for i = 1, steps do
-        local root2 = getRoot()
-        if not root2 or not State.AutoFarm then break end
-        local alpha = i / steps
-        local pos = startPos:Lerp(endPos, alpha)
-        root2.CFrame = CFrame.new(pos)
-        task.wait(speed)
-    end
-    local root3 = getRoot()
-    if root3 then root3.CFrame = targetCF end
-    pcall(function() hum.PlatformStand = prevState end)
 end
 
-local farmThread
-local questDone = false
-local lastQuestMob = ""
+-- ════════════════════════════════════════════
+--  LOADING SCREEN
+-- ════════════════════════════════════════════
+local function showLoader()
+    local sg = mk("ScreenGui", {Name="_EHLoad", ResetOnSpawn=false, IgnoreGuiInset=true, Parent=PG})
+    local bg = mk("Frame", {Size=UDim2.fromScale(1,1), BackgroundColor3=Color3.fromRGB(5,4,12), BorderSizePixel=0, Parent=sg})
 
-local function startFarmLoop()
-    if farmThread then task.cancel(farmThread) end
-    questDone = false
-    farmThread = task.spawn(function()
-        while State.AutoFarm do
-            pcall(function()
-                local hum = getHum()
-                local root = getRoot()
-                if not hum or not root then task.wait(1) return end
-                if hum.Health <= 0 then task.wait(2) return end
+    -- Background grid lines
+    for i=1,8 do
+        mk("Frame", {
+            Size=UDim2.new(1,0,0,1), Position=UDim2.new(0,0,(i-1)/8,0),
+            BackgroundColor3=Color3.fromRGB(30,20,60), BackgroundTransparency=0.7,
+            BorderSizePixel=0, Parent=bg
+        })
+    end
 
-                -- Auto eat if low HP
-                if State.AutoEat and (hum.Health / hum.MaxHealth * 100) < State.HealthPct then
-                    pcall(function() RS.Remotes.CommF_:InvokeServer("eatFruit") end)
-                    task.wait(0.5)
-                end
+    -- Center logo
+    local logo = mk("Frame", {
+        Size=UDim2.new(0,100,0,100), Position=UDim2.new(.5,-50,.35,0),
+        BackgroundColor3=C.Accent, BorderSizePixel=0, Parent=bg
+    })
+    corner(logo, 50)
+    local grad = Instance.new("UIGradient")
+    grad.Color = ColorSequence.new(Color3.fromRGB(180,50,255), Color3.fromRGB(70,10,160))
+    grad.Rotation = 135
+    grad.Parent = logo
+    mk("TextLabel", {Size=UDim2.fromScale(1,1), BackgroundTransparency=1, Text="E",
+        Font=Enum.Font.GothamBlack, TextSize=54, TextColor3=Color3.fromRGB(255,255,255), Parent=logo})
 
-                -- Get target mob data
-                local targetData = nil
-                for _, m in ipairs(MobData[Sea] or {}) do
-                    if State.FarmMob == "" or m.Name:lower():find(State.FarmMob:lower(), 1, true) then
-                        targetData = m
-                        break
-                    end
-                end
+    mk("TextLabel", {
+        Size=UDim2.new(0,400,0,40), Position=UDim2.new(.5,-200,.35,112),
+        BackgroundTransparency=1, Text="ELITE HUB", Font=Enum.Font.GothamBlack,
+        TextSize=32, TextColor3=C.Text, Parent=bg
+    })
+    mk("TextLabel", {
+        Size=UDim2.new(0,400,0,20), Position=UDim2.new(.5,-200,.35,152),
+        BackgroundTransparency=1, Text="Blox Fruits  ·  v1.0.0  ·  Delta Ready",
+        Font=Enum.Font.Gotham, TextSize=13, TextColor3=C.Sub, Parent=bg
+    })
 
-                -- Step 1: Fly to island / quest NPC and accept quest
-                if State.AutoQuest and targetData and lastQuestMob ~= targetData.Name then
-                    -- Fly to quest NPC location
-                    flyTo(targetData.QCF + Vector3.new(0, 5, 0), 0.08)
-                    task.wait(0.5)
-                    -- Accept quest
-                    pcall(function()
-                        RS.Remotes.CommF_:InvokeServer("startQuest", targetData.Quest, targetData.Level)
-                    end)
-                    lastQuestMob = targetData.Name
-                    task.wait(0.4)
-                end
+    local barBg = mk("Frame", {
+        Size=UDim2.new(0,380,0,6), Position=UDim2.new(.5,-190,.72,0),
+        BackgroundColor3=Color3.fromRGB(28,22,48), BorderSizePixel=0, Parent=bg
+    })
+    corner(barBg, 3)
+    local bar = mk("Frame", {Size=UDim2.new(0,0,1,0), BackgroundColor3=C.Accent, BorderSizePixel=0, Parent=barBg})
+    corner(bar, 3)
 
-                -- Step 2: Fly to mob spawn area
-                if targetData then
-                    local mobSpawn = targetData.MCF
-                    local nearMob = getNearestMob(State.FarmMob)
-                    -- If no mob nearby, fly to spawn
-                    if not nearMob then
-                        flyTo(mobSpawn + Vector3.new(0, 8, 0), 0.1)
-                        task.wait(0.5)
-                    end
-                end
+    local stat = mk("TextLabel", {
+        Size=UDim2.new(0,380,0,18), Position=UDim2.new(.5,-190,.72,10),
+        BackgroundTransparency=1, Text="Starting up...", Font=Enum.Font.Gotham,
+        TextSize=11, TextColor3=C.Sub, TextXAlignment=Enum.TextXAlignment.Left, Parent=bg
+    })
 
-                -- Step 3: Find nearest mob and attack from ABOVE
-                local mob = getNearestMob(State.FarmMob)
-                if mob and mob:FindFirstChild("HumanoidRootPart") then
-                    local mobPos = mob.HumanoidRootPart.Position
-                    -- Position above the mob
-                    local aboveMob = CFrame.new(mobPos + Vector3.new(0, 5, 0))
-                    root.CFrame = aboveMob
+    local steps = {
+        {.15,"Loading GUI framework..."},
+        {.3, "Injecting farm engine..."},
+        {.5, "Mapping Blox Fruits world..."},
+        {.65,"Connecting bypass modules..."},
+        {.8, "Loading TP & fruit scanner..."},
+        {.95,"Finalizing..."},
+        {1,  "Welcome to Elite Hub!"},
+    }
 
-                    -- Hold above mob while attacking
-                    local attackConn
-                    local attackTime = 0
-                    attackConn = RunService.Heartbeat:Connect(function(dt)
-                        attackTime = attackTime + dt
-                        local r = getRoot()
-                        local m2 = mob
-                        if not r or not m2 or not m2.Parent then
-                            attackConn:Disconnect()
-                            return
-                        end
-                        local mPos = m2:FindFirstChild("HumanoidRootPart")
-                        if mPos then
-                            -- Stay hovering above mob
-                            r.CFrame = CFrame.new(mPos.Position + Vector3.new(0, 5, 0))
-                        end
-                        -- Stop after 3 seconds or mob dies
-                        local mHum = m2:FindFirstChildOfClass("Humanoid")
-                        if attackTime > 3 or (mHum and mHum.Health <= 0) or not State.AutoFarm then
-                            attackConn:Disconnect()
-                        end
-                    end)
+    for _, s in ipairs(steps) do
+        task.wait(.38)
+        stat.Text = s[2]
+        tw(bar, {Size=UDim2.new(s[1],0,1,0)}, .35)
+    end
 
-                    -- Spam punch/melee clicks while hovering
-                    for _ = 1, 12 do
-                        if not State.AutoFarm then break end
-                        local mHum = mob:FindFirstChildOfClass("Humanoid")
-                        if not mHum or mHum.Health <= 0 then break end
-                        pcall(function() mouse1press() task.wait(0.05) mouse1release() end)
-                        -- Use skills too
-                        if State.UseSkills then
-                            for _, key in ipairs({"z", "x", "c", "v", "f"}) do
-                                pcall(function()
-                                    keypress(string.byte(key))
-                                    task.wait(0.05)
-                                    keyrelease(string.byte(key))
-                                end)
-                            end
-                        end
-                        task.wait(0.15)
-                    end
+    task.wait(.5)
+    tw(bg, {BackgroundTransparency=1}, .7)
+    for _, d in pairs(bg:GetDescendants()) do
+        if d:IsA("GuiObject") then
+            pcall(tw, d, {BackgroundTransparency=1, TextTransparency=1, ImageTransparency=1}, .7)
+        end
+    end
+    task.wait(.8)
+    sg:Destroy()
+end
 
-                    -- Wait for attackConn to finish
-                    task.wait(0.2)
+-- ════════════════════════════════════════════
+--  MAIN GUI BUILDER
+-- ════════════════════════════════════════════
+local function buildGUI()
+    pcall(function() PG:FindFirstChild("EliteHub"):Destroy() end)
 
-                    -- Check if quest complete, reset so we accept again
-                    pcall(function()
-                        local questGui = LP.PlayerGui:FindFirstChild("Main")
-                        if questGui then
-                            local questComplete = questGui:FindFirstChild("QuestComplete", true)
-                            if questComplete and questComplete.Visible then
-                                lastQuestMob = ""
-                            end
-                        end
-                    end)
-                else
-                    -- No mob found, fly to spawn
-                    if targetData then
-                        flyTo(targetData.MCF + Vector3.new(0, 8, 0), 0.1)
-                        task.wait(0.5)
-                    else
-                        task.wait(0.3)
-                    end
-                end
+    local sg = mk("ScreenGui", {Name="EliteHub", ResetOnSpawn=false, ZIndexBehavior=Enum.ZIndexBehavior.Sibling, IgnoreGuiInset=true, Parent=PG})
+
+    -- ── Window ──
+    local win = mk("Frame", {
+        Size=UDim2.new(0,580,0,400), Position=UDim2.new(.5,-290,.5,-200),
+        BackgroundColor3=C.BG, BorderSizePixel=0, Active=true, Parent=sg
+    })
+    corner(win, 12)
+    stroke(win, C.Accent, 1.2, 0.3)
+
+    -- ── Drag ──
+    local dragging, dStart, dPos = false, nil, nil
+
+    -- ── Titlebar ──
+    local tb = mk("Frame", {Size=UDim2.new(1,0,0,44), BackgroundColor3=C.Panel, BorderSizePixel=0, Parent=win})
+    corner(tb, 12)
+    mk("Frame", {Size=UDim2.new(1,0,.5,0), Position=UDim2.new(0,0,.5,0), BackgroundColor3=C.Panel, BorderSizePixel=0, Parent=tb})
+
+    local tbGrad = Instance.new("UIGradient")
+    tbGrad.Color = ColorSequence.new(Color3.fromRGB(28,12,55), C.Panel)
+    tbGrad.Rotation=90
+    tbGrad.Parent=tb
+
+    local eDot = mk("Frame", {Size=UDim2.new(0,24,0,24), Position=UDim2.new(0,10,.5,-12), BackgroundColor3=C.Accent, BorderSizePixel=0, Parent=tb})
+    corner(eDot,12)
+    mk("TextLabel", {Size=UDim2.fromScale(1,1), BackgroundTransparency=1, Text="E", Font=Enum.Font.GothamBlack, TextSize=14, TextColor3=Color3.new(1,1,1), Parent=eDot})
+
+    mk("TextLabel", {Size=UDim2.new(0,160,1,0), Position=UDim2.new(0,40,0,0), BackgroundTransparency=1, Text="ELITE HUB", Font=Enum.Font.GothamBlack, TextSize=16, TextColor3=C.Text, TextXAlignment=Enum.TextXAlignment.Left, Parent=tb})
+    mk("TextLabel", {Size=UDim2.new(0,120,1,0), Position=UDim2.new(0,40,0,0), BackgroundTransparency=1, Text="              Blox Fruits", Font=Enum.Font.Gotham, TextSize=11, TextColor3=C.Accent, TextXAlignment=Enum.TextXAlignment.Left, Parent=tb})
+
+    -- Window controls
+    local function winBtn(xOff, col, lbl)
+        local b = mk("TextButton", {Size=UDim2.new(0,26,0,26), Position=UDim2.new(1,xOff,.5,-13), BackgroundColor3=col, Text=lbl, Font=Enum.Font.GothamBold, TextSize=15, TextColor3=Color3.new(1,1,1), BorderSizePixel=0, Parent=tb})
+        corner(b,13)
+        return b
+    end
+    local closeBtn = winBtn(-34, Color3.fromRGB(200,50,65), "×")
+    local minBtn   = winBtn(-66, Color3.fromRGB(230,160,25), "–")
+
+    closeBtn.MouseButton1Click:Connect(function() tw(win, {BackgroundTransparency=1, Size=UDim2.new(0,580,0,0)}, .25) task.wait(.3) sg:Destroy() end)
+    local minimized = false
+    minBtn.MouseButton1Click:Connect(function()
+        minimized = not minimized
+        tw(win, {Size = minimized and UDim2.new(0,580,0,44) or UDim2.new(0,580,0,400)}, .3, Enum.EasingStyle.Back)
+    end)
+
+    tb.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging=true dStart=i.Position dPos=win.Position end end)
+    UIS.InputChanged:Connect(function(i) if dragging and i.UserInputType==Enum.UserInputType.MouseMove then local d=i.Position-dStart win.Position=UDim2.new(dPos.X.Scale,dPos.X.Offset+d.X,dPos.Y.Scale,dPos.Y.Offset+d.Y) end end)
+    UIS.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 then dragging=false end end)
+
+    -- ── Sidebar ──
+    local sb = mk("Frame", {Size=UDim2.new(0,120,1,-44), Position=UDim2.new(0,0,0,44), BackgroundColor3=C.Panel, BorderSizePixel=0, Parent=win})
+    corner(sb, 12)
+    mk("Frame", {Size=UDim2.new(.5,0,1,0), Position=UDim2.new(.5,0,0,0), BackgroundColor3=C.Panel, BorderSizePixel=0, Parent=sb})
+    local sbPad = Instance.new("UIPadding") sbPad.PaddingTop=UDim.new(0,8) sbPad.PaddingLeft=UDim.new(0,6) sbPad.PaddingRight=UDim.new(0,6) sbPad.Parent=sb
+    mk("UIListLayout", {SortOrder=Enum.SortOrder.LayoutOrder, Padding=UDim.new(0,3), Parent=sb})
+
+    -- ── Content ──
+    local ca = mk("Frame", {Size=UDim2.new(1,-128,1,-52), Position=UDim2.new(0,128,0,48), BackgroundTransparency=1, Parent=win})
+    local pages, tabBtns = {}, {}
+    local curPage = nil
+
+    local function newPage(name)
+        local sc = mk("ScrollingFrame", {
+            Size=UDim2.fromScale(1,1), BackgroundTransparency=1, BorderSizePixel=0,
+            ScrollBarThickness=3, ScrollBarImageColor3=C.Accent, CanvasSize=UDim2.new(0,0,0,0),
+            AutomaticCanvasSize=Enum.AutomaticSize.Y, Visible=false, Parent=ca
+        })
+        local l=Instance.new("UIListLayout") l.SortOrder=Enum.SortOrder.LayoutOrder l.Padding=UDim.new(0,6) l.Parent=sc
+        local p=Instance.new("UIPadding") p.PaddingTop=UDim.new(0,6) p.PaddingLeft=UDim.new(0,2) p.PaddingRight=UDim.new(0,6) p.Parent=sc
+        pages[name]=sc
+        return sc
+    end
+
+    local function newTab(label, icon, pageName)
+        local btn = mk("TextButton", {
+            Size=UDim2.new(1,0,0,32), BackgroundColor3=Color3.fromRGB(28,25,48),
+            Text="", BorderSizePixel=0, LayoutOrder=#tabBtns+1, Parent=sb
+        })
+        corner(btn, 7)
+        mk("TextLabel", {
+            Size=UDim2.new(1,-8,1,0), Position=UDim2.new(0,8,0,0),
+            BackgroundTransparency=1, Text=icon.."  "..label,
+            Font=Enum.Font.GothamBold, TextSize=11, TextColor3=C.Sub,
+            TextXAlignment=Enum.TextXAlignment.Left, Parent=btn
+        })
+        tabBtns[pageName] = btn
+
+        local function activate()
+            if curPage then
+                pages[curPage].Visible=false
+                local pb=tabBtns[curPage]
+                if pb then tw(pb,{BackgroundColor3=Color3.fromRGB(28,25,48)},.18) local l=pb:FindFirstChildOfClass("TextLabel") if l then tw(l,{TextColor3=C.Sub},.18) end end
+            end
+            curPage=pageName
+            pages[pageName].Visible=true
+            tw(btn,{BackgroundColor3=C.Accent},.18)
+            local l=btn:FindFirstChildOfClass("TextLabel")
+            if l then tw(l,{TextColor3=C.Text},.18) end
+        end
+        btn.MouseButton1Click:Connect(activate)
+        return activate
+    end
+
+    -- ── Widget builders ──
+
+    local function sec(parent, title, order)
+        local f=mk("Frame", {Size=UDim2.new(1,0,0,24), BackgroundTransparency=1, LayoutOrder=order or 0, Parent=parent})
+        mk("TextLabel", {Size=UDim2.new(1,0,1,0), BackgroundTransparency=1, Text=title:upper(),
+            Font=Enum.Font.GothamBold, TextSize=9, TextColor3=C.Accent, TextXAlignment=Enum.TextXAlignment.Left, Parent=f})
+        mk("Frame", {Size=UDim2.new(1,0,0,1), Position=UDim2.new(0,0,1,-1), BackgroundColor3=C.Accent, BackgroundTransparency=0.65, BorderSizePixel=0, Parent=f})
+        return f
+    end
+
+    local function tog(parent, label, key, order, cb)
+        local row=mk("Frame", {Size=UDim2.new(1,0,0,34), BackgroundColor3=C.Panel, BorderSizePixel=0, LayoutOrder=order or 0, Parent=parent})
+        corner(row)
+        mk("TextLabel", {Size=UDim2.new(1,-52,1,0), Position=UDim2.new(0,10,0,0), BackgroundTransparency=1, Text=label,
+            Font=Enum.Font.Gotham, TextSize=11, TextColor3=C.Text, TextXAlignment=Enum.TextXAlignment.Left, Parent=row})
+        local on = key and CFG[key] or false
+        local track=mk("Frame", {Size=UDim2.new(0,38,0,20), Position=UDim2.new(1,-44,.5,-10), BackgroundColor3=on and C.Green or C.Sub, BorderSizePixel=0, Parent=row})
+        corner(track,10)
+        local thumb=mk("Frame", {Size=UDim2.new(0,16,0,16), Position=on and UDim2.new(1,-18,.5,-8) or UDim2.new(0,2,.5,-8), BackgroundColor3=Color3.new(1,1,1), BorderSizePixel=0, Parent=track})
+        corner(thumb,8)
+        mk("TextButton", {Size=UDim2.fromScale(1,1), BackgroundTransparency=1, Text="", Parent=row}).MouseButton1Click:Connect(function()
+            if key then CFG[key]=not CFG[key] on=CFG[key] else on=not on end
+            tw(track,{BackgroundColor3=on and C.Green or C.Sub},.2)
+            tw(thumb,{Position=on and UDim2.new(1,-18,.5,-8) or UDim2.new(0,2,.5,-8)},.2)
+            if cb then cb(on) end
+        end)
+        return row
+    end
+
+    local function btn(parent, label, col, order, cb)
+        col = col or C.Accent
+        local b=mk("TextButton", {
+            Size=UDim2.new(1,0,0,32), BackgroundColor3=col, Text=label,
+            Font=Enum.Font.GothamBold, TextSize=12, TextColor3=Color3.new(1,1,1),
+            BorderSizePixel=0, LayoutOrder=order or 0, Parent=parent
+        })
+        corner(b)
+        b.MouseEnter:Connect(function() tw(b,{BackgroundColor3=C.AccDark},.12) end)
+        b.MouseLeave:Connect(function() tw(b,{BackgroundColor3=col},.12) end)
+        b.MouseButton1Click:Connect(function()
+            tw(b,{Size=UDim2.new(.97,0,0,28)},.08) task.wait(.09) tw(b,{Size=UDim2.new(1,0,0,32)},.08)
+            if cb then cb() end
+        end)
+        return b
+    end
+
+    local function drop(parent, label, opts, key, order)
+        local isOpen=false
+        local cont=mk("Frame", {Size=UDim2.new(1,0,0,34), BackgroundColor3=C.Panel, BorderSizePixel=0, LayoutOrder=order or 0, ClipsDescendants=true, Parent=parent})
+        corner(cont)
+        mk("TextLabel", {Size=UDim2.new(0,120,0,34), Position=UDim2.new(0,10,0,0), BackgroundTransparency=1, Text=label,
+            Font=Enum.Font.Gotham, TextSize=11, TextColor3=C.Text, TextXAlignment=Enum.TextXAlignment.Left, Parent=cont})
+        local selLbl=mk("TextLabel", {Size=UDim2.new(0,120,0,34), Position=UDim2.new(1,-130,0,0), BackgroundTransparency=1,
+            Text=(key and CFG[key]) or opts[1], Font=Enum.Font.GothamBold, TextSize=11, TextColor3=C.Accent, TextXAlignment=Enum.TextXAlignment.Right, Parent=cont})
+        mk("TextLabel", {Size=UDim2.new(0,18,0,34), Position=UDim2.new(1,-16,0,0), BackgroundTransparency=1, Text="▾", Font=Enum.Font.GothamBold, TextSize=12, TextColor3=C.Sub, Parent=cont})
+
+        local df=mk("Frame", {Size=UDim2.new(1,0,0,#opts*26), Position=UDim2.new(0,0,0,34), BackgroundColor3=Color3.fromRGB(20,18,38), BorderSizePixel=0, Parent=cont})
+        mk("UIListLayout", {SortOrder=Enum.SortOrder.LayoutOrder, Parent=df})
+
+        for i,opt in ipairs(opts) do
+            local ob=mk("TextButton", {Size=UDim2.new(1,0,0,26), BackgroundColor3=Color3.fromRGB(20,18,38), Text=opt,
+                Font=Enum.Font.Gotham, TextSize=11, TextColor3=C.Sub, BorderSizePixel=0, LayoutOrder=i, Parent=df})
+            ob.MouseButton1Click:Connect(function()
+                if key then CFG[key]=opt end selLbl.Text=opt isOpen=false tw(cont,{Size=UDim2.new(1,0,0,34)},.18)
             end)
-            task.wait(0.1)
+            ob.MouseEnter:Connect(function() tw(ob,{TextColor3=C.Text},.1) end)
+            ob.MouseLeave:Connect(function() tw(ob,{TextColor3=C.Sub},.1) end)
+        end
+
+        mk("TextButton", {Size=UDim2.new(1,0,0,34), BackgroundTransparency=1, Text="", Parent=cont}).MouseButton1Click:Connect(function()
+            isOpen=not isOpen
+            tw(cont, {Size=UDim2.new(1,0,0, isOpen and 34+#opts*26 or 34)}, .2, Enum.EasingStyle.Back)
+        end)
+        return cont
+    end
+
+    local function infoRow(parent, label, val, order)
+        local row=mk("Frame", {Size=UDim2.new(1,0,0,30), BackgroundColor3=C.Panel, BorderSizePixel=0, LayoutOrder=order or 0, Parent=parent})
+        corner(row)
+        mk("TextLabel", {Size=UDim2.new(.5,0,1,0), Position=UDim2.new(0,10,0,0), BackgroundTransparency=1, Text=label,
+            Font=Enum.Font.Gotham, TextSize=11, TextColor3=C.Sub, TextXAlignment=Enum.TextXAlignment.Left, Parent=row})
+        local vl=mk("TextLabel", {Size=UDim2.new(.5,-10,1,0), Position=UDim2.new(.5,0,0,0), BackgroundTransparency=1, Text=val,
+            Font=Enum.Font.GothamBold, TextSize=11, TextColor3=C.Text, TextXAlignment=Enum.TextXAlignment.Right, Parent=row})
+        return row, vl
+    end
+
+    -- ════════════════════════════════
+    --  PAGE: AUTO FARM
+    -- ════════════════════════════════
+    local pFarm = newPage("Farm")
+    local goFarm = newTab("Auto Farm","⚔","Farm")
+
+    sec(pFarm,"Farm Config",1)
+    drop(pFarm,"Method",{"Melee","Sword","Gun","Blox Fruit","Combo"},"FarmMethod",2)
+    drop(pFarm,"Target Mob",{
+        "Gorilla","Monkey","Pirate","Desert Bandit","Desert Officer",
+        "Snow Lurker","Yeti","Marine","Sky Bandit","Dark Master",
+        "Zombie","Vampire","Soul Reaper","Forest Pirate","Cocoa Warrior",
+        "Musketeer Pirate","Fishman","Shark","Dragon","Human"
+    },"TargetMob",3)
+
+    sec(pFarm,"Toggles",4)
+    tog(pFarm,"Enable Auto Farm","AutoFarm",5)
+    tog(pFarm,"Auto Quest","AutoQuest",6)
+    tog(pFarm,"Auto Eat Fruit","AutoEat",7)
+    tog(pFarm,"Auto Respawn","AutoRespawn",8)
+    tog(pFarm,"TP Bypass (safe steps)","TPBypass",9)
+
+    sec(pFarm,"Actions",10)
+    btn(pFarm,"Teleport to Nearest Mob",C.Accent,11,function()
+        local m=getNearestMob(CFG.TargetMob,99999)
+        if m then local hrp=m:FindFirstChild("HumanoidRootPart") if hrp then safeTp(hrp.Position) notify("Farm","Teleported to "..CFG.TargetMob) end
+        else notify("Farm","No "..CFG.TargetMob.." found") end
+    end)
+    btn(pFarm,"Stop Farm",C.Red,12,function() CFG.AutoFarm=false notify("Farm","Auto farm stopped") end)
+
+    -- ════════════════════════════════
+    --  PAGE: TP & FRUIT
+    -- ════════════════════════════════
+    local pTP = newPage("TP")
+    newTab("Teleport","🌀","TP")
+
+    sec(pTP,"Fruit Scanner",1)
+    tog(pTP,"Auto TP to Fruit","TPFruit",2)
+    btn(pTP,"Scan & TP to Nearest Fruit",C.Accent,3,function()
+        local fruits=getFruits()
+        local root=getRoot()
+        if not root then notify("Fruit","No character") return end
+        if #fruits==0 then notify("Fruit","No fruits found on map") return end
+        table.sort(fruits,function(a,b)
+            return (a.pos-root.Position).Magnitude < (b.pos-root.Position).Magnitude
+        end)
+        local f=fruits[1]
+        safeTp(f.pos)
+        notify("Fruit","Teleported to: "..f.name)
+    end)
+    btn(pTP,"List All Fruits",C.AccDark,4,function()
+        local fruits=getFruits()
+        if #fruits==0 then notify("Fruit","No fruits found") return end
+        local names={}
+        for i,f in ipairs(fruits) do names[i]=f.name end
+        notify("Fruits Found","Found "..#fruits..": "..table.concat(names,", "):sub(1,80))
+    end)
+
+    sec(pTP,"TP Bypass Settings",5)
+    tog(pTP,"Enable TP Bypass","TPBypass",6)
+    tog(pTP,"Safe Mode (gradual steps)","SafeTP",7)
+    drop(pTP,"Step Delay",{"Fast (0.05s)","Normal (0.15s)","Slow (0.5s)"},nil,8)
+
+    -- Sea data: {Name, Vector3 position}
+    local SEA1 = {
+        {"Starter Island",      Vector3.new(1260,  125,  1612)},
+        {"Marine Starter",      Vector3.new(-1180, 125, -1174)},
+        {"Middle Town",         Vector3.new(-192,  125,  -559)},
+        {"Jungle",              Vector3.new(-1646, 125,  -261)},
+        {"Pirate Village",      Vector3.new(-1189, 125,  4403)},
+        {"Desert",              Vector3.new(924,   125,  4089)},
+        {"Frozen Village",      Vector3.new(1175,  125, -1818)},
+        {"Snowy Village",       Vector3.new(1326,  125, -2882)},
+        {"Marine Fortress",     Vector3.new(-965,  125,  -380)},
+        {"Skylands",            Vector3.new(-4755, 872,  -718)},
+        {"Upper Skylands",      Vector3.new(-5004, 1400, -718)},
+        {"Fountain City",       Vector3.new(3324,  127, -2610)},
+    }
+
+    local SEA2 = {
+        {"Kingdom of Rose",     Vector3.new(-804,  266,   604)},
+        {"Dark Arena",          Vector3.new(-9564, 125,  -1754)},
+        {"Usoapp Island",       Vector3.new(-2581, 125,   1500)},
+        {"Green Zone",          Vector3.new(-3626, 125,   1900)},
+        {"Graveyard",           Vector3.new(-5878, 125,   -670)},
+        {"Snow Mountain",       Vector3.new(-4550, 1000, -1100)},
+        {"Hot and Cold",        Vector3.new(-3620, 125,  -2945)},
+        {"Cursed Ship",         Vector3.new(-5237, 125,  -1765)},
+        {"Ice Castle",          Vector3.new(-3966, 125,  -1120)},
+        {"Forgotten Island",    Vector3.new(-6000, 125,  -1700)},
+        {"Colosseum",           Vector3.new(926,   125,  29310)},
+        {"Magma Village",       Vector3.new(500,   125,  29650)},
+        {"Underwater City",     Vector3.new(61421, 125,   1819)},
+        {"Wano",                Vector3.new(3640,  125,  29500)},
+    }
+
+    local SEA3 = {
+        {"Port Town",           Vector3.new(-2076,  49,  -4246)},
+        {"Hydra Island",        Vector3.new(-3281,  125, -3900)},
+        {"Great Tree",          Vector3.new(-9084,  400, -2573)},
+        {"Mansion",             Vector3.new(-6640,  125, -2800)},
+        {"Tiki Outpost",        Vector3.new(-8279,  125, -1024)},
+        {"Buggy Island",        Vector3.new(-8420,  125,  1630)},
+        {"Floating Turtle",     Vector3.new(-14553, 243, -1014)},
+        {"Haunted Castle",      Vector3.new(-11540, 400, -1044)},
+        {"Distant Island",      Vector3.new(-13000, 125, -4700)},
+        {"Sea of Treats",       Vector3.new(-14055, 125,  3829)},
+        {"Peanut Island",       Vector3.new(-13350, 125,  4100)},
+        {"Cake Land",           Vector3.new(-12350, 125,  5000)},
+        {"Candy Island",        Vector3.new(-11700, 125,  5500)},
+        {"Ice Berg",            Vector3.new(-14300, 125, -2100)},
+        {"Labyrinth",           Vector3.new(-15200, 125, -1800)},
+    }
+
+    local function isleBtn(parent, name, pos, order)
+        btn(parent, name, C.Panel, order, function()
+            safeTp(pos)
+            notify("Teleport", "→ "..name)
+        end)
+    end
+
+    sec(pTP,"⚓  Sea 1",9)
+    for i, d in ipairs(SEA1) do isleBtn(pTP, d[1], d[2], 9+i) end
+
+    sec(pTP,"⚓  Sea 2",22)
+    for i, d in ipairs(SEA2) do isleBtn(pTP, d[1], d[2], 22+i) end
+
+    sec(pTP,"⚓  Sea 3",37)
+    for i, d in ipairs(SEA3) do isleBtn(pTP, d[1], d[2], 37+i) end
+
+    -- ════════════════════════════════
+    --  PAGE: BOSS FARM
+    -- ════════════════════════════════
+    local pBoss = newPage("Boss")
+    newTab("Boss Farm","💀","Boss")
+
+    sec(pBoss,"Select Boss",1)
+    drop(pBoss,"Boss",{
+        "Gorilla King","Bobby","Yeti","Darkbeard","Rip_Indra",
+        "Thunder God","Tide Keeper","Stone","Island Empress",
+        "Longma","Cake Prince","Kilo Admiral","Vice Admiral",
+        "Magma Admiral","Order","Cursed Captain","Bartolomeo"
+    },"SelectedBoss",2)
+
+    sec(pBoss,"Boss Toggles",3)
+    tog(pBoss,"Auto Boss Farm","AutoBoss",4)
+    tog(pBoss,"TP Bypass","TPBypass",5)
+
+    sec(pBoss,"Actions",6)
+    btn(pBoss,"Start Boss Farm",C.Accent,7,function() CFG.AutoBoss=true notify("Boss","Auto Boss: "..CFG.SelectedBoss) end)
+    btn(pBoss,"Stop Boss Farm",C.Red,8,function() CFG.AutoBoss=false notify("Boss","Boss farm stopped") end)
+    btn(pBoss,"TP to Boss Spawn",C.AccDark,9,function() notify("Boss","Teleporting to "..CFG.SelectedBoss.." spawn...") end)
+
+    -- ════════════════════════════════
+    --  PAGE: AUTO RAID
+    -- ════════════════════════════════
+    local pRaid = newPage("Raid")
+    newTab("Auto Raid","🌀","Raid")
+
+    -- Raid island coordinates
+    local RAIDS = {
+        ["Flame"]           = Vector3.new(3066,  28,  2760),
+        ["Ice"]             = Vector3.new(1227,  28, -2204),
+        ["Rumble"]          = Vector3.new(-4755, 872,  -718),
+        ["Quake"]           = Vector3.new(-1180, 28, -1174),
+        ["Light"]           = Vector3.new(3324,  28, -2610),
+        ["Dark"]            = Vector3.new(-9084, 28, -2573),
+        ["Buddha"]          = Vector3.new(-804,  28,   604),
+        ["Venom"]           = Vector3.new(-5237, 28, -1765),
+        ["Phoenix"]         = Vector3.new(-3966, 28, -1120),
+        ["Dough"]           = Vector3.new(-12350,28,  5000),
+        ["Shadow"]          = Vector3.new(-11540,28, -1044),
+        ["Portal"]          = Vector3.new(-14553,28, -1014),
+        ["Control"]         = Vector3.new(-15200,28, -1800),
+        ["Dragon"]          = Vector3.new(-9564, 28, -1754),
+        ["Leopard"]         = Vector3.new(-14300,28, -2100),
+        ["T-Rex"]           = Vector3.new(-13000,28, -4700),
+    }
+
+    local raidNames = {}
+    for k in pairs(RAIDS) do table.insert(raidNames, k) end
+    table.sort(raidNames)
+
+    sec(pRaid,"Raid Config",1)
+    drop(pRaid,"Raid Type", raidNames, "SelectedRaid", 2)
+
+    sec(pRaid,"Raid Toggles",3)
+    tog(pRaid,"Auto Raid (loop)","AutoRaid",4)
+    tog(pRaid,"Auto Kill Raid Boss","AutoRaidBoss",5)
+    tog(pRaid,"TP Bypass","TPBypass",6)
+    tog(pRaid,"Auto Respawn in Raid","AutoRespawn",7)
+
+    sec(pRaid,"Actions",8)
+    btn(pRaid,"Start Auto Raid",C.Accent,9,function()
+        CFG.AutoRaid = true
+        CFG.AutoRaidBoss = true
+        notify("Raid","Auto Raid started: "..(CFG.SelectedRaid or "Flame"))
+    end)
+    btn(pRaid,"Stop Raid",C.Red,10,function()
+        CFG.AutoRaid=false CFG.AutoRaidBoss=false
+        notify("Raid","Auto Raid stopped")
+    end)
+    btn(pRaid,"TP to Raid Island",C.AccDark,11,function()
+        local r = CFG.SelectedRaid or "Flame"
+        local pos = RAIDS[r]
+        if pos then safeTp(pos) notify("Raid","TP → "..r.." Raid Island")
+        else notify("Raid","Island not found: "..r) end
+    end)
+
+    sec(pRaid,"Quick Raid TP",12)
+    for i, name in ipairs(raidNames) do
+        local pos = RAIDS[name]
+        btn(pRaid, name.." Raid", C.Panel, 12+i, function()
+            safeTp(pos)
+            CFG.SelectedRaid = name
+            notify("Raid","TP → "..name.." Raid")
+        end)
+    end
+
+    -- ════════════════════════════════
+    --  PAGE: COMBAT
+    -- ════════════════════════════════
+    local pCom = newPage("Combat")
+    newTab("Combat","🥊","Combat")
+
+    sec(pCom,"Melee",1)
+    tog(pCom,"Auto Melee","AutoMelee",2)
+    sec(pCom,"Sword",3)
+    tog(pCom,"Auto Sword","AutoSword",4)
+    sec(pCom,"Gun",5)
+    tog(pCom,"Auto Gun","AutoGun",6)
+    sec(pCom,"Blox Fruit",7)
+    tog(pCom,"Auto Fruit Skills","AutoFruit",8)
+    drop(pCom,"Fruit Skill",{"Z","X","C","V","Z+X","Z+X+C","Full Combo"},"FruitSkill",9)
+    sec(pCom,"Utilities",10)
+    btn(pCom,"Kill Aura (all methods)",C.Accent,11,function()
+        CFG.AutoMelee=true CFG.AutoSword=true CFG.AutoGun=true notify("Kill Aura","All combat enabled!")
+    end)
+    btn(pCom,"Disable All Combat",C.Red,12,function()
+        CFG.AutoMelee=false CFG.AutoSword=false CFG.AutoGun=false CFG.AutoFruit=false notify("Combat","All combat off")
+    end)
+
+    -- ════════════════════════════════
+    --  PAGE: AUTO STORE / MASTERY
+    -- ════════════════════════════════
+    local pStore = newPage("Store")
+    newTab("Auto Store","🏪","Store")
+
+    sec(pStore,"Mastery Farm",1)
+    tog(pStore,"Auto Mastery Farm","AutoMastery",2)
+    drop(pStore,"Mastery Target",{"Sword","Gun","Blox Fruit","All"},"MasteryTarget",3)
+    btn(pStore,"Start Mastery Farm",C.Accent,4,function()
+        CFG.AutoMastery=true notify("Mastery","Farming mastery for: "..CFG.MasteryTarget)
+    end)
+    btn(pStore,"Stop Mastery Farm",C.Red,5,function() CFG.AutoMastery=false notify("Mastery","Mastery farm stopped") end)
+
+    sec(pStore,"Auto Store",6)
+    tog(pStore,"Auto Store Items","AutoStore",7)
+    drop(pStore,"Store Target",{"All","Weapons","Accessories","Fruits","Materials"},"StoreItem",8)
+    btn(pStore,"Open Storage Now",C.Accent,9,function()
+        -- Find storage NPC
+        local found=false
+        for _,obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:lower():find("instalar") or obj.Name:lower():find("blacksmith") or obj.Name:lower():find("chest") then
+                found=true
+                local hrp=obj:IsA("Model") and obj:FindFirstChild("HumanoidRootPart") or nil
+                if hrp then safeTp(hrp.Position) end
+                break
+            end
+        end
+        notify("Store", found and "Teleported to storage NPC" or "Storage NPC not found nearby")
+    end)
+    btn(pStore,"TP to Blox Fruit Dealer",C.AccDark,10,function() notify("Store","Teleporting to Blox Fruit Dealer...") end)
+    btn(pStore,"TP to Gacha Island",C.AccDark,11,function() notify("Store","Teleporting to Gacha Island...") end)
+
+    -- ════════════════════════════════
+    --  PAGE: PLAYER
+    -- ════════════════════════════════
+    local pPlr = newPage("Player")
+    newTab("Player","👤","Player")
+
+    sec(pPlr,"Speed",1)
+    btn(pPlr,"Speed x2 (32)",C.Accent,2,function() local h=getHum() if h then h.WalkSpeed=32 notify("Speed","Speed → 32") end end)
+    btn(pPlr,"Speed x3 (48)",C.Accent,3,function() local h=getHum() if h then h.WalkSpeed=48 notify("Speed","Speed → 48") end end)
+    btn(pPlr,"Speed x5 (80)",C.Accent,4,function() local h=getHum() if h then h.WalkSpeed=80 notify("Speed","Speed → 80") end end)
+    btn(pPlr,"Reset Speed",C.AccDark,5,function() local h=getHum() if h then h.WalkSpeed=16 notify("Speed","Speed reset") end end)
+    sec(pPlr,"Jump",6)
+    btn(pPlr,"High Jump (100)",C.Accent,7,function() local h=getHum() if h then h.JumpPower=100 notify("Jump","JumpPower → 100") end end)
+    btn(pPlr,"Super Jump (200)",C.Accent,8,function() local h=getHum() if h then h.JumpPower=200 notify("Jump","JumpPower → 200") end end)
+    btn(pPlr,"Reset Jump",C.AccDark,9,function() local h=getHum() if h then h.JumpPower=50 notify("Jump","Jump reset") end end)
+    sec(pPlr,"Abilities",10)
+    tog(pPlr,"Infinite Jump","InfJump",11,function(on) notify("Infinite Jump", on and "Enabled" or "Disabled — re-execute to fully disable") end)
+    btn(pPlr,"Rejoin Server",C.Red,12,function()
+        local TPS=game:GetService("TeleportService") TPS:Teleport(game.PlaceId,LP)
+    end)
+
+    -- ════════════════════════════════
+    --  PAGE: VISUAL
+    -- ════════════════════════════════
+    local pVis = newPage("Visual")
+    newTab("Visual","👁","Visual")
+
+    sec(pVis,"ESP",1)
+    tog(pVis,"Player ESP","PlayerESP",2,function(on) notify("ESP",on and "Player ESP ON" or "Player ESP OFF") end)
+    tog(pVis,"Mob ESP","MobESP",3,function(on) notify("ESP",on and "Mob ESP ON" or "Mob ESP OFF") end)
+    tog(pVis,"Fruit ESP","FruitESP",4,function(on) notify("ESP",on and "Fruit ESP ON" or "Fruit ESP OFF") end)
+    sec(pVis,"World",5)
+    tog(pVis,"Fullbright","Fullbright",6,function(on)
+        Lit.Brightness=on and 8 or 1 Lit.GlobalShadows=not on notify("Fullbright",on and "ON" or "OFF")
+    end)
+    tog(pVis,"No Fog",nil,7,function(on) Lit.FogEnd=on and 1e9 or 100000 notify("Fog",on and "Removed" or "Restored") end)
+    sec(pVis,"Camera",8)
+    btn(pVis,"FOV 70 (default)",C.Panel,9,function() Cam.FieldOfView=70 end)
+    btn(pVis,"FOV 90",C.Accent,10,function() Cam.FieldOfView=90 end)
+    btn(pVis,"FOV 110",C.Accent,11,function() Cam.FieldOfView=110 end)
+
+    -- ════════════════════════════════
+    --  PAGE: SETTINGS
+    -- ════════════════════════════════
+    local pSet = newPage("Settings")
+    newTab("Settings","⚙","Settings")
+
+    sec(pSet,"Keybinds",1)
+    infoRow(pSet,"Toggle GUI","RightShift",2)
+    infoRow(pSet,"Current Executor","Delta / Hydrogen",3)
+
+    sec(pSet,"Farm Settings",4)
+    infoRow(pSet,"Farm Delay",CFG.FarmDelay.."s",5)
+    infoRow(pSet,"TP Delay",CFG.TPDelay.."s",6)
+    drop(pSet,"Farm Speed",{"Fast (0.1s)","Normal (0.15s)","Safe (0.3s)"},nil,7)
+    drop(pSet,"TP Mode",{"Bypass Steps","Instant","Safe Lerp"},nil,8)
+
+    sec(pSet,"Safety",9)
+    tog(pSet,"TP Bypass","TPBypass",10)
+    tog(pSet,"Safe TP (gradual)","SafeTP",11)
+    tog(pSet,"Auto Respawn","AutoRespawn",12)
+
+    sec(pSet,"Performance",13)
+    tog(pSet,"FPS Counter","FPSShow",14)
+    tog(pSet,"Anti AFK","AntiAFK",15)
+
+    sec(pSet,"About",16)
+    infoRow(pSet,"Version","v1.0.0",17)
+    infoRow(pSet,"Script","Elite Hub",18)
+    infoRow(pSet,"Discord","discord.gg/EmsMsHZCVH",19)
+    btn(pSet,"Copy Discord Link",C.Discord,20,function()
+        pcall(function() setclipboard("discord.gg/EmsMsHZCVH") end)
+        notify("Discord","Link copied! discord.gg/EmsMsHZCVH")
+    end)
+    btn(pSet,"Reload Script",C.AccDark,21,function()
+        sg:Destroy()
+        task.wait(.2)
+        buildGUI()
+        notify("Elite Hub","GUI reloaded!")
+    end)
+
+    goFarm()
+    return sg
+end
+
+-- ════════════════════════════════════════════
+--  FPS COUNTER
+-- ════════════════════════════════════════════
+local function startFPS()
+    pcall(function() PG:FindFirstChild("_EHfps"):Destroy() end)
+    local sg=mk("ScreenGui", {Name="_EHfps", ResetOnSpawn=false, ZIndexBehavior=Enum.ZIndexBehavior.Sibling, Parent=PG})
+    local f=mk("Frame", {Size=UDim2.new(0,84,0,26), Position=UDim2.new(1,-90,0,8), BackgroundColor3=C.BG, BorderSizePixel=0, Parent=sg})
+    corner(f) stroke(f,C.Accent,1,0.5)
+    local dot=mk("Frame", {Size=UDim2.new(0,7,0,7), Position=UDim2.new(0,7,.5,-3.5), BackgroundColor3=C.Green, BorderSizePixel=0, Parent=f})
+    corner(dot,4)
+    local lbl=mk("TextLabel", {Size=UDim2.new(1,-20,1,0), Position=UDim2.new(0,18,0,0), BackgroundTransparency=1, Text="FPS: --", Font=Enum.Font.GothamBold, TextSize=11, TextColor3=C.Text, TextXAlignment=Enum.TextXAlignment.Left, Parent=f})
+
+    local fr,lt=0,tick()
+    RS.RenderStepped:Connect(function()
+        sg.Enabled=CFG.FPSShow
+        fr=fr+1
+        local n=tick()
+        if n-lt>=0.5 then
+            local fps=math.floor(fr/(n-lt))
+            lbl.Text="FPS: "..fps
+            dot.BackgroundColor3=fps>=55 and C.Green or fps>=30 and C.Gold or C.Red
+            fr,lt=0,n
         end
     end)
 end
 
--- ================================================
--- STATS LOOP
--- ================================================
-local statsThread
-local function startStatsLoop()
-    if statsThread then task.cancel(statsThread) end
-    statsThread=task.spawn(function()
-        local statMap={Melee=4,Defense=3,Sword=2,Gun=1,["Blox Fruit"]=5}
-        while State.AutoStats do
-            pcall(function()
-                RS.Remotes.CommF_:InvokeServer("Allocate",statMap[State.StatChoice] or 4)
-            end)
-            task.wait(0.1)
+-- ════════════════════════════════════════════
+--  ANTI AFK
+-- ════════════════════════════════════════════
+local function startAntiAFK()
+    task.spawn(function()
+        while task.wait(55) do
+            if CFG.AntiAFK then
+                pcall(function() VU:CaptureController() VU:ClickButton2(Vector2.new()) end)
+                local h=getHum()
+                if h then h:Move(Vector3.new(1,0,0),true) task.wait(.1) h:Move(Vector3.new(0,0,0),true) end
+            end
         end
     end)
 end
 
--- ================================================
--- FRUIT SNIPER
--- ================================================
-local fruitThread
+-- ════════════════════════════════════════════
+--  INFINITE JUMP
+-- ════════════════════════════════════════════
+UIS.JumpRequest:Connect(function()
+    if CFG.InfJump then
+        local h=getHum()
+        if h then h:ChangeState(Enum.HumanoidStateType.Jumping) end
+    end
+end)
+
+-- ════════════════════════════════════════════
+--  FRUIT TP LOOP
+-- ════════════════════════════════════════════
 local function startFruitLoop()
-    if fruitThread then task.cancel(fruitThread) end
-    fruitThread=task.spawn(function()
-        while State.FruitSniper do
-            pcall(function()
-                for _,container in ipairs({WS,WS:FindFirstChild("Fruits"),WS:FindFirstChild("droppedFruits")}) do
-                    if container then
-                    for _,obj in ipairs(container:GetChildren()) do
-                        if obj:IsA("Model") and obj.Name:find("Fruit") then
-                            local h=obj:FindFirstChild("Handle") or obj.PrimaryPart or obj:FindFirstChildOfClass("BasePart")
-                            if h then
-                                tpTo(h.CFrame+Vector3.new(0,3,0),1.5)
-                                task.wait(1.6)
-                                pcall(function() RS.Remotes.CommF_:InvokeServer("Eat",obj) end)
-                                pcall(function() RS.Remotes.CommF_:InvokeServer("PickFruit",obj) end)
-                                task.wait(0.5)
+    task.spawn(function()
+        while task.wait(3) do
+            if CFG.TPFruit and isAlive() then
+                local fruits=getFruits()
+                local root=getRoot()
+                if root and #fruits>0 then
+                    table.sort(fruits,function(a,b) return (a.pos-root.Position).Magnitude<(b.pos-root.Position).Magnitude end)
+                    safeTp(fruits[1].pos)
+                end
+            end
+        end
+    end)
+end
+
+-- ════════════════════════════════════════════
+--  AUTO RAID LOOP
+-- ════════════════════════════════════════════
+local RAID_COORDS = {
+    ["Flame"]   = Vector3.new(3066,  28,  2760),
+    ["Ice"]     = Vector3.new(1227,  28, -2204),
+    ["Rumble"]  = Vector3.new(-4755, 872,  -718),
+    ["Quake"]   = Vector3.new(-1180, 28, -1174),
+    ["Light"]   = Vector3.new(3324,  28, -2610),
+    ["Dark"]    = Vector3.new(-9084, 28, -2573),
+    ["Buddha"]  = Vector3.new(-804,  28,   604),
+    ["Venom"]   = Vector3.new(-5237, 28, -1765),
+    ["Phoenix"] = Vector3.new(-3966, 28, -1120),
+    ["Dough"]   = Vector3.new(-12350,28,  5000),
+    ["Shadow"]  = Vector3.new(-11540,28, -1044),
+    ["Portal"]  = Vector3.new(-14553,28, -1014),
+    ["Control"] = Vector3.new(-15200,28, -1800),
+    ["Dragon"]  = Vector3.new(-9564, 28, -1754),
+    ["Leopard"] = Vector3.new(-14300,28, -2100),
+    ["T-Rex"]   = Vector3.new(-13000,28, -4700),
+}
+
+local function startRaidLoop()
+    task.spawn(function()
+        while task.wait(0.2) do
+            if not CFG.AutoRaid then continue end
+            if not isAlive() then
+                if CFG.AutoRespawn then task.wait(4) end
+                continue
+            end
+            -- TP to raid island
+            local raidPos = RAID_COORDS[CFG.SelectedRaid]
+            if raidPos then
+                local root = getRoot()
+                if root and (root.Position - raidPos).Magnitude > 150 then
+                    safeTp(raidPos)
+                    task.wait(1.5)
+                end
+            end
+            -- Kill raid mobs
+            if CFG.AutoRaidBoss then
+                for _, obj in pairs(workspace:GetDescendants()) do
+                    if not CFG.AutoRaid then break end
+                    if obj:IsA("Model") then
+                        local hum = obj:FindFirstChildOfClass("Humanoid")
+                        local hrp = obj:FindFirstChild("HumanoidRootPart")
+                        if hum and hrp and hum.Health > 0 and obj ~= getChar() then
+                            local root = getRoot()
+                            if root and (hrp.Position - root.Position).Magnitude < 400 then
+                                safeTp(hrp.Position + Vector3.new(0,0,3))
+                                local char = getChar()
+                                if char then
+                                    local tool = char:FindFirstChildWhichIsA("Tool")
+                                    if tool then
+                                        local ev = tool:FindFirstChild("RemoteEvent")
+                                        if ev then pcall(function() ev:FireServer() end) end
+                                    end
+                                end
+                                task.wait(0.15)
                             end
                         end
                     end
-                    end
                 end
-            end)
-            task.wait(2)
+            end
         end
     end)
 end
 
--- ================================================
--- ESP
--- ================================================
-local function clearESP()
-    for _,v in pairs(ESPObjects) do pcall(function() v:Destroy() end) end
-    ESPObjects={}
-end
-local function addESP(player)
-    if player==LP then return end
-    local function make()
-        local char=player.Character if not char then return end
-        local root=char:FindFirstChild("HumanoidRootPart") if not root then return end
-        local bb=Instance.new("BillboardGui")
-        bb.Size=UDim2.new(0,120,0,40) bb.StudsOffset=Vector3.new(0,4,0)
-        bb.AlwaysOnTop=true bb.Adornee=root safeParent(bb)
-        local nl=Instance.new("TextLabel")
-        nl.Size=UDim2.new(1,0,0.6,0) nl.BackgroundTransparency=1
-        nl.Text=player.Name nl.TextColor3=Color3.fromRGB(255,70,70)
-        nl.TextStrokeTransparency=0 nl.Font=Enum.Font.GothamBold nl.TextSize=14 nl.Parent=bb
-        local dl=Instance.new("TextLabel")
-        dl.Size=UDim2.new(1,0,0.4,0) dl.Position=UDim2.new(0,0,0.6,0)
-        dl.BackgroundTransparency=1 dl.TextColor3=Color3.fromRGB(255,255,255)
-        dl.TextStrokeTransparency=0 dl.Font=Enum.Font.Gotham dl.TextSize=11 dl.Parent=bb
-        ESPObjects[player.Name]=bb
-        local c c=RunService.Heartbeat:Connect(function()
-            if not State.ESP or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
-                bb:Destroy() ESPObjects[player.Name]=nil c:Disconnect() return
+-- ════════════════════════════════════════════
+--  MAIN FARM LOOP
+-- ════════════════════════════════════════════
+local function startFarmLoop()
+    task.spawn(function()
+        while task.wait(CFG.FarmDelay) do
+            if not CFG.AutoFarm then continue end
+            if not isAlive() then
+                if CFG.AutoRespawn then task.wait(3) end
+                continue
             end
-            local mr=getRoot()
-            if mr then dl.Text=math.floor((player.Character.HumanoidRootPart.Position-mr.Position).Magnitude).."m" end
-        end)
-    end
-    if player.Character then make() end
-    player.CharacterAdded:Connect(function() task.wait(1) make() end)
-end
-local function refreshESP()
-    clearESP()
-    if not State.ESP then return end
-    for _,p in ipairs(Players:GetPlayers()) do addESP(p) end
-end
-Players.PlayerAdded:Connect(function(p) if State.ESP then addESP(p) end end)
-
--- ================================================
--- UI
--- ================================================
-local T={
-    BG=Color3.fromRGB(13,13,20),BG2=Color3.fromRGB(20,20,30),BG3=Color3.fromRGB(28,28,42),
-    Side=Color3.fromRGB(16,16,25),Accent=Color3.fromRGB(120,60,230),AccentL=Color3.fromRGB(160,100,255),
-    Text=Color3.fromRGB(235,235,235),TextD=Color3.fromRGB(150,150,170),
-    Border=Color3.fromRGB(38,38,55),Hover=Color3.fromRGB(30,22,50),
-    ON=Color3.fromRGB(120,60,230),OFF=Color3.fromRGB(38,38,55),
-}
-local function tw(o,p,t,s) TweenService:Create(o,TweenInfo.new(t or 0.2,s or Enum.EasingStyle.Quad),p):Play() end
-local function cr(p,r) local c=Instance.new("UICorner") c.CornerRadius=UDim.new(0,r or 8) c.Parent=p end
-local function sk(p,c,t) local s=Instance.new("UIStroke") s.Color=c or T.Border s.Thickness=t or 1 s.Parent=p end
-local function mkF(parent,size,pos,color)
-    local f=Instance.new("Frame") f.Size=size or UDim2.new(1,0,0,30)
-    f.Position=pos or UDim2.new(0,0,0,0) f.BackgroundColor3=color or T.BG2
-    f.BorderSizePixel=0 f.Parent=parent return f
-end
-local function mkL(parent,text,size,pos,color,font,xa)
-    local l=Instance.new("TextLabel") l.Size=size or UDim2.new(1,0,1,0)
-    l.Position=pos or UDim2.new(0,0,0,0) l.BackgroundTransparency=1
-    l.Text=text or "" l.TextColor3=color or T.Text l.TextSize=13
-    l.Font=font or Enum.Font.GothamMedium l.TextXAlignment=xa or Enum.TextXAlignment.Left
-    l.Parent=parent return l
-end
-local function mkB(parent,size,pos)
-    local b=Instance.new("TextButton") b.Size=size or UDim2.new(1,0,0,30)
-    b.Position=pos or UDim2.new(0,0,0,0) b.BackgroundTransparency=1
-    b.Text="" b.AutoButtonColor=false b.BorderSizePixel=0 b.Parent=parent return b
-end
-
--- Notify
-local notifGui=Instance.new("ScreenGui") notifGui.Name="EliteNotify" notifGui.ResetOnSpawn=false safeParent(notifGui)
-local nHolder=mkF(notifGui,UDim2.new(0,260,1,0),UDim2.new(1,-266,0,0),Color3.new(0,0,0))
-nHolder.BackgroundTransparency=1
-local nL=Instance.new("UIListLayout") nL.VerticalAlignment=Enum.VerticalAlignment.Bottom nL.Padding=UDim.new(0,5) nL.Parent=nHolder
-local nP=Instance.new("UIPadding") nP.PaddingBottom=UDim.new(0,10) nP.Parent=nHolder
-
-local function Notify(title,content,duration)
-    duration=duration or 4
-    local card=mkF(nHolder,UDim2.new(1,0,0,56),nil,T.BG2)
-    card.BackgroundTransparency=1 cr(card,10) sk(card,T.Accent)
-    mkF(card,UDim2.new(0,3,1,-10),UDim2.new(0,6,0,5),T.Accent):FindFirstChild("UICorner") or cr(card:FindFirstChild("Frame"),3)
-    local bar=mkF(card,UDim2.new(0,3,1,-10),UDim2.new(0,6,0,5),T.Accent) cr(bar,3)
-    local tl=mkL(card,title,UDim2.new(1,-16,0,17),UDim2.new(0,14,0,6),T.AccentL,Enum.Font.GothamBold) tl.TextSize=12
-    local cl=mkL(card,content,UDim2.new(1,-16,0,15),UDim2.new(0,14,0,25),T.TextD,Enum.Font.Gotham) cl.TextSize=11
-    tw(card,{BackgroundTransparency=0},0.3)
-    task.delay(duration,function() tw(card,{BackgroundTransparency=1},0.3) task.wait(0.35) card:Destroy() end)
-end
-
--- Main window
-local gui=Instance.new("ScreenGui") gui.Name="EliteHub" gui.ResetOnSpawn=false safeParent(gui)
-local WIN=UDim2.fromOffset(540,360)
-local win=mkF(gui,WIN,UDim2.new(0.5,-270,0.5,-180),T.BG)
-cr(win,12) sk(win,T.Border)
-
--- Floating
-local floatT,floatBase=0,Vector2.new(0.5,-180)
-local dragging=false
-RunService.Heartbeat:Connect(function(dt)
-    if not State.FloatAnim or dragging then return end
-    floatT=floatT+dt*1.2
-    win.Position=UDim2.new(win.Position.X.Scale,win.Position.X.Offset,0.5,floatBase.Y+math.sin(floatT)*3)
-end)
-
--- Drag
-local dragStart,winStart
-local dHandle=mkB(win,UDim2.new(1,-142,0,44)) dHandle.ZIndex=20
-dHandle.InputBegan:Connect(function(i)
-    if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-        dragging=true
-        dragStart=Vector2.new(i.Position.X,i.Position.Y)
-        winStart=Vector2.new(win.Position.X.Offset,win.Position.Y.Offset)
-        floatBase=winStart floatT=0
-    end
-end)
-dHandle.InputEnded:Connect(function(i)
-    if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-        dragging=false floatBase=Vector2.new(win.Position.X.Offset,win.Position.Y.Offset) floatT=0
-    end
-end)
-UserInputService.InputChanged:Connect(function(i)
-    if dragging and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then
-        local d=Vector2.new(i.Position.X,i.Position.Y)-dragStart
-        win.Position=UDim2.new(0.5,winStart.X+d.X,0.5,winStart.Y+d.Y)
-    end
-end)
-
--- Sidebar RIGHT
-local sidebar=mkF(win,UDim2.new(0,138,1,0),UDim2.new(1,-138,0,0),T.Side)
-cr(sidebar,12) mkF(sidebar,UDim2.new(0,16,1,0),UDim2.new(0,0,0,0),T.Side)
-local logoArea=mkF(sidebar,UDim2.new(1,0,0,60),nil,T.Side)
-local logoL=mkL(logoArea,"ELITE HUB",UDim2.new(1,-4,0,20),UDim2.new(0,2,0,8),T.Text,Enum.Font.GothamBold,Enum.TextXAlignment.Center) logoL.TextSize=13
-local uline=mkF(logoArea,UDim2.new(0,42,0,2),UDim2.new(0.5,-21,0,32),T.Accent) cr(uline,2)
-local subL=mkL(logoArea,"by Marcus",UDim2.new(1,-4,0,12),UDim2.new(0,2,0,38),T.TextD,Enum.Font.Gotham,Enum.TextXAlignment.Center) subL.TextSize=10
-
-local tabScroll=Instance.new("ScrollingFrame")
-tabScroll.Size=UDim2.new(1,0,1,-62) tabScroll.Position=UDim2.new(0,0,0,62)
-tabScroll.BackgroundTransparency=1 tabScroll.BorderSizePixel=0 tabScroll.ScrollBarThickness=0
-tabScroll.CanvasSize=UDim2.new(0,0,0,0) tabScroll.AutomaticCanvasSize=Enum.AutomaticSize.Y tabScroll.Parent=sidebar
-local tLL=Instance.new("UIListLayout") tLL.Padding=UDim.new(0,2) tLL.Parent=tabScroll
-local tPP=Instance.new("UIPadding") tPP.PaddingTop=UDim.new(0,4) tPP.PaddingLeft=UDim.new(0,4) tPP.PaddingRight=UDim.new(0,4) tPP.Parent=tabScroll
-
-local contentArea=mkF(win,UDim2.new(1,-142,1,-8),UDim2.new(0,4,0,4),T.BG2) cr(contentArea,10)
-
--- Tab system
-local tabs={} local activeTab=nil
-local function createTab(name)
-    local page=Instance.new("ScrollingFrame")
-    page.Size=UDim2.new(1,-6,1,-6) page.Position=UDim2.new(0,3,0,3)
-    page.BackgroundTransparency=1 page.BorderSizePixel=0
-    page.ScrollBarThickness=3 page.ScrollBarImageColor3=T.Accent
-    page.CanvasSize=UDim2.new(0,0,0,0) page.AutomaticCanvasSize=Enum.AutomaticSize.Y
-    page.Visible=false page.Parent=contentArea
-    local pL=Instance.new("UIListLayout") pL.Padding=UDim.new(0,4) pL.Parent=page
-    local pP=Instance.new("UIPadding")
-    pP.PaddingTop=UDim.new(0,5) pP.PaddingLeft=UDim.new(0,3) pP.PaddingRight=UDim.new(0,4) pP.PaddingBottom=UDim.new(0,5) pP.Parent=page
-
-    local btn=Instance.new("TextButton")
-    btn.Size=UDim2.new(1,0,0,29) btn.BackgroundColor3=T.Side btn.BackgroundTransparency=1
-    btn.BorderSizePixel=0 btn.Text="" btn.AutoButtonColor=false btn.Parent=tabScroll cr(btn,6)
-    local ind=mkF(btn,UDim2.new(0,3,0,13),UDim2.new(0,0,0.5,-6.5),T.Accent) cr(ind,3) ind.Visible=false
-    local bL=mkL(btn,name,UDim2.new(1,-10,1,0),UDim2.new(0,8,0,0),T.TextD,Enum.Font.GothamMedium) bL.TextSize=11
-
-    local function activate()
-        if activeTab==name then return end
-        if activeTab and tabs[activeTab] then
-            tabs[activeTab].page.Visible=false
-            tw(tabs[activeTab].btn,{BackgroundTransparency=1},0.12)
-            tw(tabs[activeTab].label,{TextColor3=T.TextD},0.12)
-            tabs[activeTab].ind.Visible=false
-        end
-        activeTab=name page.Visible=true ind.Visible=true
-        tw(btn,{BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(24,14,44)},0.12)
-        tw(bL,{TextColor3=T.Text},0.12)
-    end
-    btn.MouseButton1Click:Connect(activate)
-    btn.MouseEnter:Connect(function() if activeTab~=name then tw(btn,{BackgroundTransparency=0.7},0.1) end end)
-    btn.MouseLeave:Connect(function() if activeTab~=name then tw(btn,{BackgroundTransparency=1},0.1) end end)
-    tabs[name]={page=page,btn=btn,label=bL,ind=ind,activate=activate}
-    if not activeTab then activate() end
-
-    local Tab={} local order=0 local function no() order=order+1 return order end
-
-    function Tab:Section(title)
-        local w=mkF(page,UDim2.new(1,0,0,21),nil,Color3.new(0,0,0)) w.BackgroundTransparency=1 w.LayoutOrder=no()
-        mkF(w,UDim2.new(1,-6,0,1),UDim2.new(0,3,0.5,0),T.Border)
-        local sl=mkL(w,"  "..title.."  ",UDim2.new(0,0,1,0),UDim2.new(0,6,0,0),T.Accent,Enum.Font.GothamBold)
-        sl.TextSize=10 sl.AutomaticSize=Enum.AutomaticSize.X sl.BackgroundColor3=T.BG2 sl.BackgroundTransparency=0
-    end
-
-    function Tab:Button(title,desc,cb)
-        local h=desc~="" and 44 or 31
-        local w=mkF(page,UDim2.new(1,0,0,h),nil,T.BG3) w.LayoutOrder=no() cr(w,7) sk(w,T.Border)
-        local ab=mkF(w,UDim2.new(0,3,0,h-9),UDim2.new(0,0,0,4.5),T.Accent) cr(ab,3) ab.ZIndex=2
-        local tl=mkL(w,title,UDim2.new(1,-32,0,15),UDim2.new(0,8,0,desc~="" and 5 or 8),T.Text,Enum.Font.GothamMedium) tl.TextSize=12 tl.ZIndex=2
-        if desc~="" then local dl=mkL(w,desc,UDim2.new(1,-32,0,12),UDim2.new(0,8,0,21),T.TextD,Enum.Font.Gotham) dl.TextSize=10 dl.ZIndex=2 end
-        local cb2=mkB(w,UDim2.new(1,0,1,0)) cb2.ZIndex=6
-        cb2.MouseEnter:Connect(function() tw(w,{BackgroundColor3=T.Hover},0.1) end)
-        cb2.MouseLeave:Connect(function() tw(w,{BackgroundColor3=T.BG3},0.1) end)
-        cb2.MouseButton1Click:Connect(function()
-            tw(w,{BackgroundColor3=Color3.fromRGB(42,16,88)},0.06) task.wait(0.07) tw(w,{BackgroundColor3=T.Hover},0.1) pcall(cb)
-        end)
-    end
-
-    function Tab:Toggle(title,default,cb)
-        local state=default or false
-        local w=mkF(page,UDim2.new(1,0,0,32),nil,T.BG3) w.LayoutOrder=no() cr(w,7) sk(w,T.Border)
-        local ab=mkF(w,UDim2.new(0,3,0,17),UDim2.new(0,0,0,7.5),state and T.ON or T.OFF) cr(ab,3) ab.ZIndex=2
-        local tl=mkL(w,title,UDim2.new(1,-54,1,0),UDim2.new(0,8,0,0),T.Text,Enum.Font.GothamMedium) tl.TextSize=11 tl.ZIndex=2
-        local pBG=mkF(w,UDim2.new(0,32,0,15),UDim2.new(1,-40,0.5,-7.5),state and T.ON or T.OFF) cr(pBG,10) pBG.ZIndex=3
-        local pill=mkF(pBG,UDim2.new(0,10,0,10),UDim2.new(0,state and 19 or 3,0.5,-5),Color3.new(1,1,1)) cr(pill,6) pill.ZIndex=4
-        local function set(v)
-            state=v tw(pBG,{BackgroundColor3=v and T.ON or T.OFF},0.17)
-            tw(pill,{Position=UDim2.new(0,v and 19 or 3,0.5,-5)},0.17,Enum.EasingStyle.Back)
-            tw(ab,{BackgroundColor3=v and T.ON or T.OFF},0.17) pcall(cb,v)
-        end
-        local cb2=mkB(w,UDim2.new(1,0,1,0)) cb2.ZIndex=6
-        cb2.MouseEnter:Connect(function() tw(w,{BackgroundColor3=T.Hover},0.1) end)
-        cb2.MouseLeave:Connect(function() tw(w,{BackgroundColor3=T.BG3},0.1) end)
-        cb2.MouseButton1Click:Connect(function() set(not state) end)
-        return {SetValue=function(_,v) set(v) end,GetValue=function() return state end}
-    end
-
-    function Tab:Dropdown(title,options,cb)
-        local selected=options[1] or "" local open=false
-        local w=mkF(page,UDim2.new(1,0,0,39),nil,T.BG3) w.LayoutOrder=no() w.ClipsDescendants=false cr(w,7) sk(w,T.Border)
-        local ab=mkF(w,UDim2.new(0,3,0,23),UDim2.new(0,0,0,8),T.Accent) cr(ab,3) ab.ZIndex=2
-        local tl=mkL(w,title,UDim2.new(0.6,0,0,13),UDim2.new(0,8,0,4),T.TextD,Enum.Font.Gotham) tl.TextSize=10 tl.ZIndex=2
-        local sBtn=Instance.new("TextButton")
-        sBtn.Size=UDim2.new(1,-14,0,17) sBtn.Position=UDim2.new(0,7,0,19)
-        sBtn.BackgroundColor3=T.BG sBtn.BorderSizePixel=0 sBtn.Text="" sBtn.AutoButtonColor=false sBtn.ZIndex=3 sBtn.Parent=w
-        cr(sBtn,5) sk(sBtn,T.Border)
-        local sL=mkL(sBtn,selected,UDim2.new(1,-18,1,0),UDim2.new(0,5,0,0),T.Text,Enum.Font.Gotham) sL.TextSize=10 sL.ZIndex=4
-        local chev=mkL(sBtn,"▾",UDim2.new(0,14,1,0),UDim2.new(1,-15,0,0),T.Accent,Enum.Font.GothamBold,Enum.TextXAlignment.Center) chev.TextSize=10 chev.ZIndex=4
-        local panel=mkF(gui,UDim2.new(0,0,0,0),nil,T.BG2) panel.Visible=false panel.ZIndex=30 panel.ClipsDescendants=true cr(panel,7) sk(panel,T.Accent)
-        local panL=Instance.new("UIListLayout") panL.Parent=panel
-        local function closeP()
-            open=false tw(chev,{Rotation=0},0.12)
-            tw(panel,{Size=UDim2.new(0,panel.AbsoluteSize.X,0,0)},0.14) task.wait(0.16) panel.Visible=false
-        end
-        local function buildItems()
-            for _,c in ipairs(panel:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
-            for _,opt in ipairs(options) do
-                local item=Instance.new("TextButton")
-                item.Size=UDim2.new(1,0,0,22) item.BackgroundColor3=opt==selected and Color3.fromRGB(24,10,50) or T.BG2
-                item.BorderSizePixel=0 item.Text="" item.AutoButtonColor=false item.ZIndex=31 item.Parent=panel
-                local il=mkL(item,opt,UDim2.new(1,-6,1,0),UDim2.new(0,5,0,0),opt==selected and T.AccentL or T.Text,Enum.Font.Gotham)
-                il.TextSize=10 il.ZIndex=32
-                item.MouseButton1Click:Connect(function() selected=opt sL.Text=opt closeP() buildItems() pcall(cb,opt) end)
+            local mob=getNearestMob(CFG.TargetMob, CFG.FarmRadius*4)
+            if not mob then continue end
+            local hrp=mob:FindFirstChild("HumanoidRootPart")
+            if not hrp then continue end
+            safeTp(hrp.Position + Vector3.new(0,0,3))
+            -- Simulate click/attack
+            local char=getChar()
+            if char then
+                local tool=char:FindFirstChildWhichIsA("Tool")
+                if tool then
+                    local ev=tool:FindFirstChild("RemoteEvent") or tool:FindFirstChild("RemoteFunction")
+                    if ev and ev:IsA("RemoteEvent") then pcall(function() ev:FireServer() end) end
+                end
             end
         end
-        buildItems()
-        sBtn.MouseButton1Click:Connect(function()
-            open=not open
-            if open then
-                panel.Visible=true
-                local abs=sBtn.AbsolutePosition local pw=w.AbsoluteSize.X-14
-                panel.Size=UDim2.new(0,pw,0,0) panel.Position=UDim2.new(0,abs.X,0,abs.Y+21)
-                tw(chev,{Rotation=180},0.12) tw(panel,{Size=UDim2.new(0,pw,0,math.min(#options*22,110))},0.17,Enum.EasingStyle.Back)
-            else closeP() end
-        end)
-        return {SetValue=function(_,v) selected=v sL.Text=v buildItems() end,GetValue=function() return selected end}
-    end
-
-    function Tab:Slider(title,min,max,default,cb)
-        local value=default or min
-        local w=mkF(page,UDim2.new(1,0,0,48),nil,T.BG3) w.LayoutOrder=no() cr(w,7) sk(w,T.Border)
-        mkF(w,UDim2.new(0,3,0,32),UDim2.new(0,0,0,8),T.Accent)
-        local tl=mkL(w,title,UDim2.new(1,-58,0,14),UDim2.new(0,8,0,6),T.Text,Enum.Font.GothamMedium) tl.TextSize=11
-        local vL=mkL(w,tostring(value),UDim2.new(0,42,0,14),UDim2.new(1,-46,0,6),T.AccentL,Enum.Font.GothamBold,Enum.TextXAlignment.Right) vL.TextSize=11
-        local track=mkF(w,UDim2.new(1,-18,0,5),UDim2.new(0,9,0,30),T.OFF) cr(track,4)
-        local fill=mkF(track,UDim2.new((value-min)/(max-min),0,1,0),nil,T.Accent) cr(fill,4)
-        local knob=mkF(fill,UDim2.new(0,10,0,10),UDim2.new(1,-5,0.5,-5),Color3.new(1,1,1)) cr(knob,6)
-        local ds=false
-        local function upd(x)
-            local pct=math.clamp((x-track.AbsolutePosition.X)/track.AbsoluteSize.X,0,1)
-            value=math.round(min+(max-min)*pct) vL.Text=tostring(value)
-            tw(fill,{Size=UDim2.new(pct,0,1,0)},0.04) pcall(cb,value)
-        end
-        track.InputBegan:Connect(function(i)
-            if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then ds=true upd(i.Position.X) end
-        end)
-        UserInputService.InputChanged:Connect(function(i)
-            if ds and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then upd(i.Position.X) end
-        end)
-        UserInputService.InputEnded:Connect(function(i)
-            if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then ds=false end
-        end)
-    end
-
-    return Tab
-end
-
--- ================================================
--- BUILD TABS
--- ================================================
-local infoTab=createTab("Info")
-infoTab:Section("Elite Hub")
-infoTab:Button("Copy Discord","discord.gg/Pq2dsdfHhE",function()
-    pcall(setclipboard,"https://discord.gg/Pq2dsdfHhE")
-    Notify("Elite Hub","Discord copied!",3)
-end)
-infoTab:Button("Credits","Script by Marcus",function() Notify("Credits","Elite Hub — by Marcus",4) end)
-infoTab:Section("Status")
-infoTab:Button("Sea "..Sea.." Detected","PlaceId: "..PlaceId,function() end)
-
-local farmTab=createTab("Farm")
-farmTab:Section("Auto Farm")
-local seaMobNames={"Nearest Mob"}
-for _,m in ipairs(MobData[Sea] or {}) do table.insert(seaMobNames,m.Name.." (Lv "..m.Level..")") end
-farmTab:Dropdown("Select Mob",seaMobNames,function(v)
-    State.FarmMob=v=="Nearest Mob" and "" or (v:match("^(.+) %(Lv") or "")
-end)
-farmTab:Toggle("Auto Farm",false,function(v)
-    State.AutoFarm=v
-    if v then startFarmLoop() Notify("Elite Hub","Auto Farm ON",3)
-    else Notify("Elite Hub","Auto Farm OFF",3) end
-end)
-farmTab:Toggle("Auto Quest",false,function(v) State.AutoQuest=v end)
-farmTab:Toggle("Use Skills (Z X C V F)",true,function(v) State.UseSkills=v end)
-farmTab:Toggle("Auto Eat (low HP)",true,function(v) State.AutoEat=v end)
-farmTab:Slider("Eat below HP%",0,100,30,function(v) State.HealthPct=v end)
-
-local statsTab=createTab("Stats")
-statsTab:Section("Auto Stats")
-statsTab:Dropdown("Stat Type",{"Melee","Defense","Sword","Gun","Blox Fruit"},function(v) State.StatChoice=v end)
-statsTab:Toggle("Auto Stats",false,function(v) State.AutoStats=v if v then startStatsLoop() end end)
-
-local tpTab=createTab("Teleport")
-tpTab:Section("Sea "..Sea.." Islands")
-for _,tp in ipairs(TeleportData[Sea] or TeleportData[1]) do
-    local cf=tp.CF
-    tpTab:Button(tp.Name,"",function()
-        tpTo(cf,2.5)
-        Notify("Teleport","Going to "..tp.Name,3)
     end)
 end
 
-local fruitTab=createTab("Fruit")
-fruitTab:Section("Fruit Sniper")
-fruitTab:Toggle("Fruit Sniper",false,function(v)
-    State.FruitSniper=v
-    if v then startFruitLoop() Notify("Elite Hub","Fruit Sniper ON",3)
-    else Notify("Elite Hub","Fruit Sniper OFF",3) end
-end)
-fruitTab:Button("Scan Now","TP to nearest fruit on map",function()
-    local found=false
-    for _,container in ipairs({WS,WS:FindFirstChild("Fruits"),WS:FindFirstChild("droppedFruits")}) do
-        if container then
-        for _,obj in ipairs(container:GetChildren()) do
-            if obj:IsA("Model") and obj.Name:find("Fruit") then
-                local h=obj:FindFirstChild("Handle") or obj.PrimaryPart or obj:FindFirstChildOfClass("BasePart")
-                if h then tpTo(h.CFrame+Vector3.new(0,3,0),2) Notify("Fruit","Teleporting to "..obj.Name,4) found=true break end
-            end
-        end
-        end
-        if found then break end
-    end
-    if not found then Notify("Fruit Sniper","No fruits found",3) end
-end)
-
-local espTab=createTab("ESP")
-espTab:Section("Player ESP")
-espTab:Toggle("Player ESP",false,function(v) State.ESP=v refreshESP() Notify("ESP",v and "ON" or "OFF",3) end)
-espTab:Button("Refresh","",function() refreshESP() Notify("ESP","Refreshed",2) end)
-
-local settTab=createTab("Settings")
-settTab:Section("Hub")
-settTab:Toggle("Floating Animation",true,function(v) State.FloatAnim=v end)
-settTab:Dropdown("Accent Color",{"Purple","Blue","Cyan","Green","Red","Pink"},function(v)
-    local cols={Purple=Color3.fromRGB(120,60,230),Blue=Color3.fromRGB(50,110,240),Cyan=Color3.fromRGB(30,185,210),
-        Green=Color3.fromRGB(40,185,100),Red=Color3.fromRGB(210,50,60),Pink=Color3.fromRGB(215,60,165)}
-    if cols[v] then T.Accent=cols[v] T.ON=cols[v] uline.BackgroundColor3=cols[v] end
-    Notify("Settings","Accent: "..v,3)
-end)
-settTab:Button("Close Hub","Destroy the UI",function()
-    for _,g in ipairs(CoreGui:GetChildren()) do
-        if g.Name=="EliteHub" or g.Name=="EliteNotify" then g:Destroy() end
-    end
-    pcall(function() LP.PlayerGui.EliteHub:Destroy() end)
-    pcall(function() LP.PlayerGui.EliteNotify:Destroy() end)
-end)
-
--- Minimize END
-local minimized=false
-UserInputService.InputBegan:Connect(function(i,p)
-    if not p and i.KeyCode==Enum.KeyCode.End then
-        minimized=not minimized
-        contentArea.Visible=not minimized
-        tw(win,{Size=minimized and UDim2.fromOffset(140,60) or WIN},0.25,Enum.EasingStyle.Quint)
-    end
-end)
-
--- Respawn
+-- ════════════════════════════════════════════
+--  AUTO RESPAWN
+-- ════════════════════════════════════════════
 LP.CharacterAdded:Connect(function()
-    task.wait(2)
-    if State.AutoFarm then startFarmLoop() end
-    if State.AutoStats then startStatsLoop() end
-    if State.FruitSniper then startFruitLoop() end
-    if State.ESP then refreshESP() end
+    if CFG.AutoRespawn then
+        task.wait(2)
+        notify("Respawn","Back! Resuming...")
+    end
 end)
 
--- ================================================
--- DISCORD POPUP
--- ================================================
-task.wait(0.5)
-local popGui=Instance.new("ScreenGui") popGui.Name="ElitePop" popGui.ResetOnSpawn=false safeParent(popGui)
-local popDim=mkF(popGui,UDim2.new(1,0,1,0),nil,Color3.fromRGB(0,0,0)) popDim.BackgroundTransparency=0.45 popDim.ZIndex=50
-local popCard=mkF(popGui,UDim2.new(0,290,0,130),UDim2.new(0.5,-145,0.5,-65),T.BG2) cr(popCard,12) sk(popCard,T.Accent) popCard.ZIndex=51
-local pTitle=mkL(popCard,"Join Elite Hub Discord?",UDim2.new(1,-16,0,22),UDim2.new(0,8,0,12),T.Text,Enum.Font.GothamBold,Enum.TextXAlignment.Center) pTitle.TextSize=14 pTitle.ZIndex=52
-local pSub=mkL(popCard,"discord.gg/Pq2dsdfHhE",UDim2.new(1,-16,0,16),UDim2.new(0,8,0,36),T.TextD,Enum.Font.Gotham,Enum.TextXAlignment.Center) pSub.TextSize=11 pSub.ZIndex=52
+-- ════════════════════════════════════════════
+--  KEYBIND TOGGLE
+-- ════════════════════════════════════════════
+local guiRef = nil
+UIS.InputBegan:Connect(function(inp, gp)
+    if gp then return end
+    if inp.KeyCode == Enum.KeyCode.RightShift then
+        if guiRef and guiRef.Parent then
+            local main=guiRef:FindFirstChild("Main") or guiRef:FindFirstChildWhichIsA("Frame")
+            if main then main.Visible=not main.Visible end
+        end
+    end
+end)
 
-local yBtn=Instance.new("TextButton")
-yBtn.Size=UDim2.new(0,112,0,32) yBtn.Position=UDim2.new(0,14,0,76)
-yBtn.BackgroundColor3=T.Accent yBtn.BorderSizePixel=0
-yBtn.Text="Yes, Join!" yBtn.TextColor3=Color3.new(1,1,1)
-yBtn.Font=Enum.Font.GothamBold yBtn.TextSize=12 yBtn.AutoButtonColor=false yBtn.ZIndex=52 yBtn.Parent=popCard cr(yBtn,8)
+-- ════════════════════════════════════════════
+--  DISCORD POPUP
+-- ════════════════════════════════════════════
+local function discordPopup()
+    task.wait(2.5)
+    local sg=mk("ScreenGui", {Name="_EHDiscord", ResetOnSpawn=false, ZIndexBehavior=Enum.ZIndexBehavior.Sibling, Parent=PG})
+    local f=mk("Frame", {Size=UDim2.new(0,320,0,148), Position=UDim2.new(.5,-160,1,10), BackgroundColor3=C.Panel, BorderSizePixel=0, Parent=sg})
+    corner(f,12)
+    stroke(f, C.Discord, 1.2, 0.2)
 
-local nBtn=Instance.new("TextButton")
-nBtn.Size=UDim2.new(0,112,0,32) nBtn.Position=UDim2.new(0,164,0,76)
-nBtn.BackgroundColor3=T.BG3 nBtn.BorderSizePixel=0
-nBtn.Text="No thanks" nBtn.TextColor3=T.TextD
-nBtn.Font=Enum.Font.Gotham nBtn.TextSize=12 nBtn.AutoButtonColor=false nBtn.ZIndex=52 nBtn.Parent=popCard cr(nBtn,8) sk(nBtn,T.Border)
+    mk("Frame", {Size=UDim2.new(1,0,0,4), BackgroundColor3=C.Discord, BorderSizePixel=0, Parent=f})
+    local topFix=mk("Frame", {Size=UDim2.new(1,0,0,2), BackgroundColor3=C.Discord, BorderSizePixel=0, Parent=f})
+    corner(topFix)
 
-local function closePopup()
-    tw(popCard,{BackgroundTransparency=1},0.3) tw(popDim,{BackgroundTransparency=1},0.3)
-    task.wait(0.35) popGui:Destroy()
+    local ic=mk("Frame", {Size=UDim2.new(0,40,0,40), Position=UDim2.new(0,14,0,16), BackgroundColor3=C.Discord, BorderSizePixel=0, Parent=f})
+    corner(ic,20)
+    mk("TextLabel", {Size=UDim2.fromScale(1,1), BackgroundTransparency=1, Text="d", Font=Enum.Font.GothamBlack, TextSize=22, TextColor3=Color3.new(1,1,1), Parent=ic})
+
+    mk("TextLabel", {Size=UDim2.new(1,-70,0,20), Position=UDim2.new(0,64,0,14), BackgroundTransparency=1, Text="Join Elite Hub Discord!", Font=Enum.Font.GothamBlack, TextSize=13, TextColor3=C.Text, TextXAlignment=Enum.TextXAlignment.Left, Parent=f})
+    mk("TextLabel", {Size=UDim2.new(1,-70,0,32), Position=UDim2.new(0,64,0,36), BackgroundTransparency=1, Text="Get updates, new features & support.", Font=Enum.Font.Gotham, TextSize=11, TextColor3=C.Sub, TextXAlignment=Enum.TextXAlignment.Left, TextWrapped=true, Parent=f})
+
+    local lf=mk("Frame", {Size=UDim2.new(1,-24,0,26), Position=UDim2.new(0,12,0,80), BackgroundColor3=Color3.fromRGB(12,10,28), BorderSizePixel=0, Parent=f})
+    corner(lf)
+    mk("TextLabel", {Size=UDim2.new(1,-12,1,0), Position=UDim2.new(0,10,0,0), BackgroundTransparency=1, Text="discord.gg/EmsMsHZCVH", Font=Enum.Font.GothamBold, TextSize=12, TextColor3=C.Discord, TextXAlignment=Enum.TextXAlignment.Left, Parent=lf})
+
+    local cpBtn=mk("TextButton", {Size=UDim2.new(0,80,0,28), Position=UDim2.new(0,12,1,-40), BackgroundColor3=C.Discord, Text="Copy Link", Font=Enum.Font.GothamBold, TextSize=11, TextColor3=Color3.new(1,1,1), BorderSizePixel=0, Parent=f})
+    corner(cpBtn)
+    cpBtn.MouseButton1Click:Connect(function()
+        pcall(function() setclipboard("discord.gg/EmsMsHZCVH") end)
+        cpBtn.Text="Copied!" task.wait(2) cpBtn.Text="Copy Link"
+    end)
+
+    local xBtn=mk("TextButton", {Size=UDim2.new(0,24,0,24), Position=UDim2.new(1,-32,0,8), BackgroundColor3=Color3.fromRGB(50,46,75), Text="×", Font=Enum.Font.GothamBold, TextSize=15, TextColor3=C.Sub, BorderSizePixel=0, Parent=f})
+    corner(xBtn,12)
+    xBtn.MouseButton1Click:Connect(function()
+        tw(f,{Position=UDim2.new(.5,-160,1,10)},.35)
+        task.wait(.4) sg:Destroy()
+    end)
+
+    tw(f,{Position=UDim2.new(.5,-160,1,-158)},.45,Enum.EasingStyle.Back)
+    task.delay(16,function() if sg.Parent then tw(f,{Position=UDim2.new(.5,-160,1,10)},.35) task.wait(.4) pcall(function() sg:Destroy() end) end end)
 end
-yBtn.MouseButton1Click:Connect(function()
-    pcall(setclipboard,"https://discord.gg/Pq2dsdfHhE")
-    Notify("Elite Hub","Discord link copied! Paste in browser.",5) closePopup()
-end)
-nBtn.MouseButton1Click:Connect(function() closePopup() end)
 
-task.wait(0.3)
-Notify("Elite Hub","Loaded! Sea "..Sea.." | by Marcus",5)
+-- ════════════════════════════════════════════
+--  WATERMARK
+-- ════════════════════════════════════════════
+local function watermark()
+    local sg=mk("ScreenGui", {Name="_EHWater", ResetOnSpawn=false, Parent=PG})
+    local f=mk("Frame", {Size=UDim2.new(0,210,0,24), Position=UDim2.new(0,6,0,6), BackgroundColor3=C.BG, BorderSizePixel=0, Parent=sg})
+    corner(f,7) stroke(f,C.Accent,1,0.45)
+    mk("TextLabel", {Size=UDim2.fromScale(1,1), BackgroundTransparency=1, Text="⚔ Elite Hub v1.0.0 · discord.gg/EmsMsHZCVH",
+        Font=Enum.Font.GothamBold, TextSize=9, TextColor3=C.Sub, Parent=f})
+end
+
+-- ════════════════════════════════════════════
+--  BOOT
+-- ════════════════════════════════════════════
+task.spawn(function()
+    showLoader()
+    task.wait(.1)
+    guiRef = buildGUI()
+    startFPS()
+    startAntiAFK()
+    startFarmLoop()
+    startFruitLoop()
+    startRaidLoop()
+    watermark()
+    task.wait(.4)
+    notify("Elite Hub v1.0.0","Loaded! RShift = toggle GUI")
+    discordPopup()
+end)
+
+print("╔══════════════════════════════════╗")
+print("║  Elite Hub v1.0.0 — Blox Fruits   ║")
+print("║  Delta / Hydrogen / Codex / AX  ║")
+print("║  discord.gg/EmsMsHZCVH          ║")
+print("╚══════════════════════════════════╝")
