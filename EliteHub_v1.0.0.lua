@@ -1,20 +1,13 @@
--- ╔══════════════════════════════════════════════════════════════════╗
--- ║   ███████╗██╗     ██╗████████╗███████╗                           ║
--- ║   ██╔════╝██║     ██║╚══██╔══╝██╔════╝                           ║
--- ║   █████╗  ██║     ██║   ██║   █████╗                             ║
--- ║   ██╔══╝  ██║     ██║   ██║   ██╔══╝                             ║
--- ║   ███████╗███████╗██║   ██║   ███████╗  HUB                      ║
--- ║   ╚══════╝╚══════╝╚═╝   ╚═╝   ╚══════╝                           ║
--- ║                                                                   ║
--- ║   Version  : v1.0.0  (Release Edition)                           ║
--- ║   Game     : Blox Fruits  (All Seas, Lv 1–2800+)                 ║
--- ║   Executors: Delta, Fluxus, Arceus X, Wave                       ║
--- ║   Discord  : discord.gg/EmsMsHZCVH                               ║
--- ╚══════════════════════════════════════════════════════════════════╝
+-- ================================================================
+--   ELITE HUB  -  v1.0.0  (Release Edition)
+--   Game      : Blox Fruits  (All Seas, Lv 1-2800+)
+--   Executors : Delta, Fluxus, Arceus X, Wave
+--   Discord   : discord.gg/EmsMsHZCVH
+-- ================================================================
 
--- ════════════════════════════════════════════
+-- ============================================
 --  CAPABILITY FLAGS
--- ════════════════════════════════════════════
+-- ============================================
 local HAS_DRAW      = typeof(Drawing)              == "table"
 local HAS_WRITEFILE = typeof(writefile)            == "function"
 local HAS_READFILE  = typeof(readfile)             == "function"
@@ -41,9 +34,9 @@ end)
 local EL = EXEC_NAME:lower()
 IS_DELTA = EL:find("delta") ~= nil
 
--- ════════════════════════════════════════════
+-- ============================================
 --  EXECUTOR SAFETY GATE  (block Xeno / Solara)
--- ════════════════════════════════════════════
+-- ============================================
 if EL:find("xeno") or EL:find("solara") then
     pcall(function()
         game:GetService("Players").LocalPlayer:Kick(
@@ -55,9 +48,9 @@ if EL:find("xeno") or EL:find("solara") then
     return
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  SERVICES
--- ════════════════════════════════════════════
+-- ============================================
 local function ref(s)  return (HAS_CLONEREF and cloneref or function(x) return x end)(s) end
 local function wrap(f) return (HAS_NCC      and newcclosure or function(x) return x end)(f) end
 
@@ -81,7 +74,7 @@ local AVATAR_URL   = "rbxthumb://type=AvatarHeadShot&id=" .. USER_ID .. "&w=150&
 
 -- Discord + remove death-interrupt effects
 print("[Elite Hub] discord.gg/EmsMsHZCVH")
-pcall(function() toclipboard("https://discord.gg/EmsMsHZCVH") end)
+if typeof(setclipboard) == "function" then pcall(function() setclipboard("discord.gg/EmsMsHZCVH") end) end
 pcall(function()
     local ec = RepStorage:FindFirstChild("Effect")
     if ec then
@@ -93,9 +86,9 @@ pcall(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  CONFIG  (auto-saved to executor file)
--- ════════════════════════════════════════════
+-- ============================================
 local CFG_FILE  = "EliteHub_v1_config.json"
 local CFG_FOLDER= "Elite Hub Scripts/Blox Fruits"
 
@@ -196,9 +189,9 @@ local function qSave()
     task.delay(1.5, function() _savePend = false; saveConfig(S) end)
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  _G.Settings  (full legacy compat table)
--- ════════════════════════════════════════════
+-- ============================================
 _G.Settings = {
     Main = {
         ["Auto Farm Level"]=false,["Fast Auto Farm Level"]=false,
@@ -267,11 +260,11 @@ _G.Settings = {
     ConfigsUI = {ColorUI=Color3.fromRGB(255,0,127)},
 }
 
--- ════════════════════════════════════════════
---  MOB DATABASE  (All Seas, Lv 1–2800+)
--- ════════════════════════════════════════════
+-- ============================================
+--  MOB DATABASE  (All Seas, Lv 1-2800+)
+-- ============================================
 local MOBS = {
-    -- ── SEA 1 ─────────────────────────────────────────────────────────────
+    -- -- SEA 1 -------------------------------------------------------------
     {sea=1,name="Bandit",         minLv=1,   maxLv=14,  kills=8,  pos=Vector3.new(979,125,1570),    questPos=Vector3.new(997,126,1587)},
     {sea=1,name="Monkey",         minLv=15,  maxLv=29,  kills=8,  pos=Vector3.new(-1500,125,-200),   questPos=Vector3.new(-1495,125,-185)},
     {sea=1,name="Gorilla",        minLv=30,  maxLv=59,  kills=8,  pos=Vector3.new(-1700,125,-310),   questPos=Vector3.new(-1695,125,-295)},
@@ -285,7 +278,7 @@ local MOBS = {
     {sea=1,name="Sky Bandit",     minLv=300, maxLv=374, kills=12, pos=Vector3.new(-4700,875,-700),   questPos=Vector3.new(-4690,876,-690)},
     {sea=1,name="Dark Master",    minLv=375, maxLv=449, kills=12, pos=Vector3.new(-4950,1410,-700),  questPos=Vector3.new(-4940,1411,-690)},
     {sea=1,name="Toga Warrior",   minLv=450, maxLv=624, kills=12, pos=Vector3.new(3324,127,-2640),   questPos=Vector3.new(3334,127,-2630)},
-    -- ── SEA 2 ─────────────────────────────────────────────────────────────
+    -- -- SEA 2 -------------------------------------------------------------
     {sea=2,name="Hoodlum",             minLv=625, maxLv=699,  kills=10, pos=Vector3.new(-750,266,550),    questPos=Vector3.new(-740,267,560)},
     {sea=2,name="Trader",              minLv=700, maxLv=774,  kills=10, pos=Vector3.new(-900,266,650),    questPos=Vector3.new(-890,267,660)},
     {sea=2,name="Forest Pirate",       minLv=775, maxLv=849,  kills=10, pos=Vector3.new(-3550,125,1850),  questPos=Vector3.new(-3540,126,1860)},
@@ -306,7 +299,7 @@ local MOBS = {
     {sea=2,name="Swan Pirate",         minLv=1850,maxLv=1924, kills=12, pos=Vector3.new(880,125,29250),   questPos=Vector3.new(890,126,29260)},
     {sea=2,name="Poseidon Soldier",    minLv=1925,maxLv=1999, kills=14, pos=Vector3.new(61350,125,1780),  questPos=Vector3.new(61360,126,1790)},
     {sea=2,name="Poseidon Knight",     minLv=2000,maxLv=2099, kills=14, pos=Vector3.new(61450,125,1850),  questPos=Vector3.new(61460,126,1860)},
-    -- ── SEA 3 ─────────────────────────────────────────────────────────────
+    -- -- SEA 3 -------------------------------------------------------------
     {sea=3,name="Galley Pirate",        minLv=1500,maxLv=1574, kills=14, pos=Vector3.new(-2000,50,-4200),  questPos=Vector3.new(-1990,51,-4190)},
     {sea=3,name="Pirate Millionaire",   minLv=1575,maxLv=1649, kills=14, pos=Vector3.new(-2100,50,-4300),  questPos=Vector3.new(-2090,51,-4290)},
     {sea=3,name="Jungle Bug",           minLv=1650,maxLv=1724, kills=14, pos=Vector3.new(-3200,125,-3800), questPos=Vector3.new(-3190,126,-3790)},
@@ -339,9 +332,9 @@ for _, m in ipairs(MOBS) do
     if not _seenMob[uid] then _seenMob[uid]=true; table.insert(SEA_MOBS_LIST[m.sea], m.name) end
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  ISLAND / BOSS / RAID DATA
--- ════════════════════════════════════════════
+-- ============================================
 local SEA1_ISLANDS = {
     {"Starter Island",Vector3.new(1260,125,1612)},{"Marine Starter",Vector3.new(-1180,125,-1174)},
     {"Middle Town",Vector3.new(-192,125,-559)},{"Jungle",Vector3.new(-1646,125,-261)},
@@ -394,9 +387,9 @@ local RAID_POS = {
     Magma=Vector3.new(500,28,29650),Gravity=Vector3.new(-4755,28,-718),
 }
 
--- ════════════════════════════════════════════
+-- ============================================
 --  LEVEL ENGINE
--- ════════════════════════════════════════════
+-- ============================================
 local function getLevel()
     local lv = 1
     pcall(function()
@@ -424,9 +417,9 @@ local function getMobForLevel(lv)
     return best or MOBS[1]
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  THEME
--- ════════════════════════════════════════════
+-- ============================================
 local T = {
     BG    =Color3.fromRGB(8,8,8),   SB    =Color3.fromRGB(10,10,10),
     TopBar=Color3.fromRGB(10,10,10),Panel =Color3.fromRGB(14,14,14),
@@ -442,9 +435,9 @@ local T = {
 -- Forward declaration so CharacterAdded closure captures the correct upvalue
 local _AutoFarmActive = false
 
--- ════════════════════════════════════════════
+-- ============================================
 --  STATS & STATUS
--- ════════════════════════════════════════════
+-- ============================================
 local STATS = {
     kills=0,deaths=0,questsDone=0,fruitsTP=0,
     chestsTP=0,questKills=0,startTime=os.time(),
@@ -462,16 +455,16 @@ LP.CharacterAdded:Connect(function()
     if S.AutoFarm or S.AutoLevelFarm then _AutoFarmActive = true end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  QUEST STATE MACHINE
--- ════════════════════════════════════════════
+-- ============================================
 local QUEST = {
     state="idle", mob=nil, killsNeeded=0, killsDone=0, lastNpcPos=nil,
 }
 
--- ════════════════════════════════════════════
+-- ============================================
 --  FPS TRACKER
--- ════════════════════════════════════════════
+-- ============================================
 local FPS = 60
 do
     local frames, last = 0, tick()
@@ -482,9 +475,9 @@ do
     end))
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  TIME FORMATTERS
--- ════════════════════════════════════════════
+-- ============================================
 local function fmtTime(s)
     local h=math.floor(s/3600); local m=math.floor((s%3600)/60); local sc=s%60
     if h>0 then return string.format("%dh %02dm",h,m) end
@@ -496,26 +489,26 @@ local function fmtClock()
     return ""
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  CORE CHARACTER HELPERS
--- ════════════════════════════════════════════
+-- ============================================
 local function getChar()  return LP.Character end
 local function getHum()   local c=getChar(); return c and c:FindFirstChildOfClass("Humanoid") end
 local function getRoot()  local c=getChar(); return c and c:FindFirstChild("HumanoidRootPart") end
 local function isAlive()  local h=getHum();  return h and h.Health>0 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  COMMUNICATION HELPER  (CommF_ invoke)
--- ════════════════════════════════════════════
+-- ============================================
 local function Com(suffix, ...)
     pcall(function()
         RepStorage.Remotes["Comm"..suffix..""]:InvokeServer(...)
     end)
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  ENEMY SPAWNS FOLDER  (for quest targeting)
--- ════════════════════════════════════════════
+-- ============================================
 pcall(function()
     if workspace:FindFirstChild("EnemySpawns") then return end
     local folder = Instance.new("Folder", workspace); folder.Name = "EnemySpawns"
@@ -547,9 +540,9 @@ pcall(function()
     end)
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  SIMULATION RADIUS HACK
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(function()
     while task.wait(0.05) do
         pcall(function()
@@ -559,9 +552,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  SMOOTH TELEPORT  (2-step, anti-detection)
--- ════════════════════════════════════════════
+-- ============================================
 local _tween = nil
 local function tp(pos)
     local root = getRoot(); if not root then return end
@@ -576,7 +569,7 @@ local function tp(pos)
     if HAS_SIM then pcall(function() setsimulationradius(1000,1000) end) end
 end
 
--- Bypass TP (kills character mid-jump then teleports — bypasses sea anticheat)
+-- Bypass TP (kills character mid-jump then teleports -- bypasses sea anticheat)
 local function bypassTP(Point)
     local root = getRoot(); if not root then return end
     if _tween then pcall(function() _tween:Cancel() end) end
@@ -622,9 +615,9 @@ local function toTarget(targetCF)
     return ok and tw or nil
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  QUEST CHECK  (uses GuideModule + Quests)
--- ════════════════════════════════════════════
+-- ============================================
 local _QC_cache, _QC_lastLv, _QC_lastTarget = nil, -1, ""
 local function QuestCheck()
     local Lvl = getLevel()
@@ -767,9 +760,9 @@ local function QuestCheck()
     return _QC_cache
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  BRING MOB SYSTEM
--- ════════════════════════════════════════════
+-- ============================================
 local PosMon = CFrame.new(0,0,0)
 -- _AutoFarmActive declared earlier (forward decl before CharacterAdded)
 
@@ -801,9 +794,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  WEAPON MANAGEMENT
--- ════════════════════════════════════════════
+-- ============================================
 local _CurrentWeaponName = ""
 local SelectWeapon = "Melee"
 
@@ -838,9 +831,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  COMBAT FRAMEWORK  (blade-hit attack)
--- ════════════════════════════════════════════
+-- ============================================
 local CombatFrameworkR = nil
 local _CF_ok = false
 
@@ -999,10 +992,10 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  MOB FINDING
--- ════════════════════════════════════════════
--- Strip Blox Fruits level tag: "Bandit [Lv. 5]" → "bandit"
+-- ============================================
+-- Strip Blox Fruits level tag: "Bandit [Lv. 5]" -> "bandit"
 local function cleanMobName(n)
     return n:lower():gsub("%[lv%.%s*%d+%]",""):gsub("%[lv%s*%d+%]",""):gsub("%s+","")
 end
@@ -1080,9 +1073,9 @@ local function isDead(mob)
     return not h or h.Health<=0
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  MULTI-METHOD COMBAT ENGINE  (8 methods)
--- ════════════════════════════════════════════
+-- ============================================
 
 -- Fire Blox Fruits skill remotes (Z/X/C/V) towards target
 -- Respects per-skill toggles in _G.Settings.Configs["Skill Z"] etc.
@@ -1112,7 +1105,7 @@ local function fireSkills(hrp)
     end)
 end
 
--- Direct RigControllerEvent hit — works even without CombatFramework
+-- Direct RigControllerEvent hit -- works even without CombatFramework
 local function fireDirectHit(mob, hrp)
     pcall(function()
         local hits = {}
@@ -1228,9 +1221,9 @@ local function attackMob(mob)
     return killed
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  QUEST NPC INTERACTION
--- ════════════════════════════════════════════
+-- ============================================
 local function findQuestNPC(nearPos, radius)
     radius = radius or 120
     local best, bestD = nil, radius
@@ -1311,9 +1304,9 @@ local function tryAcceptQuest(qName, qLevel, mobName)
     end
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  FRUIT / CHEST SCANNER
--- ════════════════════════════════════════════
+-- ============================================
 local FRUIT_KW = {"fruit","devil","logia","paramecia","zoan","ancient","mythical","df_","devl"}
 -- Keywords that indicate it's a static NPC/model, not a pickable fruit
 local FRUIT_EXCLUDE = {"npc","stand","shop","vendor","quest","master","trainer","elder","lord","guide","stall","store"}
@@ -1354,9 +1347,9 @@ local function scanChests()
     return found
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  ANTI-AFK  (randomised, hard to detect)
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(function()
     local actions = {
         function() pcall(function() VirtualUser:CaptureController() end) end,
@@ -1378,9 +1371,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  NOTIFICATION SYSTEM  (slides in from right)
--- ════════════════════════════════════════════
+-- ============================================
 local _nGui
 local function notify(title, body, dur, accent)
     dur=dur or 3.5; accent=accent or T.Accent
@@ -1417,9 +1410,9 @@ local function notify(title, body, dur, accent)
     end)
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  WATERMARK
--- ════════════════════════════════════════════
+-- ============================================
 local function buildWatermark()
     pcall(function() PG:FindFirstChild("_EHW"):Destroy() end)
     local sg=Instance.new("ScreenGui"); sg.Name="_EHW"; sg.ResetOnSpawn=false; sg.Parent=PG
@@ -1439,9 +1432,9 @@ local function buildWatermark()
     end))
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  LOADING SCREEN  (full, with grid+shimmer+log)
--- ════════════════════════════════════════════
+-- ============================================
 local function showLoader()
     local sg=Instance.new("ScreenGui"); sg.Name="_EHL"; sg.ResetOnSpawn=false
     sg.IgnoreGuiInset=true; sg.ZIndexBehavior=Enum.ZIndexBehavior.Sibling; sg.Parent=PG
@@ -1478,12 +1471,12 @@ local function showLoader()
     -- Sub info
     local sub=Instance.new("TextLabel"); sub.Size=UDim2.new(1,-22,0,14)
     sub.Position=UDim2.new(0,22,0,68); sub.BackgroundTransparency=1
-    sub.Text="BLOX FRUITS  •  ALL SEAS  •  LV 1–2800  •  v1.0.0"
+    sub.Text="BLOX FRUITS    ALL SEAS    LV 1-2800    v1.0.0"
     sub.Font=Enum.Font.GothamBold; sub.TextSize=7.5; sub.TextColor3=Color3.fromRGB(55,55,55)
     sub.TextXAlignment=Enum.TextXAlignment.Left; sub.Parent=card
     local execLbl=Instance.new("TextLabel"); execLbl.Size=UDim2.new(1,-22,0,12)
     execLbl.Position=UDim2.new(0,22,0,83); execLbl.BackgroundTransparency=1
-    execLbl.Text="Executor: "..EXEC_NAME..(IS_DELTA and "  ✓ Delta" or "")
+    execLbl.Text="Executor: "..EXEC_NAME..(IS_DELTA and "  [OK] Delta" or "")
     execLbl.Font=Enum.Font.Gotham; execLbl.TextSize=8
     execLbl.TextColor3=IS_DELTA and T.Blue or Color3.fromRGB(48,48,48)
     execLbl.TextXAlignment=Enum.TextXAlignment.Left; execLbl.Parent=card
@@ -1536,7 +1529,7 @@ local function showLoader()
     end
     local foot=Instance.new("TextLabel"); foot.Size=UDim2.new(1,0,0,12)
     foot.Position=UDim2.new(0,0,1,-16); foot.BackgroundTransparency=1
-    foot.Text="v1.0.0  •  discord.gg/EmsMsHZCVH  •  Anti-Rat Protection Active"
+    foot.Text="v1.0.0    discord.gg/EmsMsHZCVH    Anti-Rat Protection Active"
     foot.Font=Enum.Font.Gotham; foot.TextSize=7.5; foot.TextColor3=Color3.fromRGB(35,35,35); foot.Parent=card
 
     TweenService:Create(card,TweenInfo.new(0.32,Enum.EasingStyle.Back),{BackgroundTransparency=0}):Play()
@@ -1551,7 +1544,7 @@ local function showLoader()
 
     step(0.06,"Verifying executor safety...",  T.Blue,  "[ OK ] Executor: "..EXEC_NAME)
     step(0.14,"Loading mob database...",        nil,     "[ OK ] "..(#MOBS).." mobs across Sea 1/2/3")
-    step(0.22,"Initialising level engine...",   nil,     "[ OK ] Level → Mob detection ready (Lv 1–2800)")
+    step(0.22,"Initialising level engine...",   nil,     "[ OK ] Level -> Mob detection ready (Lv 1-2800)")
     step(0.31,"Mapping island teleports...",    nil,     "[ OK ] "..(#SEA1_ISLANDS+#SEA2_ISLANDS+#SEA3_ISLANDS).." islands registered")
     step(0.40,"Loading quest engine...",              T.Gold,  "[ OK ] GuideModule/Quests + state machine ready")
     step(0.50,"Arming combat engine (8 methods)...",  T.Red,   "[ OK ] RigControllerEvent + Skills Z/X/C/V + BladeHit")
@@ -1572,9 +1565,9 @@ local function showLoader()
     task.wait(0.5); pcall(function() sg:Destroy() end)
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  ESP ENGINE
--- ════════════════════════════════════════════
+-- ============================================
 local espObjs = {}
 local function clearESP() for _,o in pairs(espObjs) do pcall(function() o:Remove() end) end espObjs={} end
 local function newDraw(cls,props)
@@ -1638,13 +1631,13 @@ local function startESP()
             for _,f in ipairs(scanFruits()) do
                 if f.part and f.part.Parent then
                     local sc,vis,_=w2s(f.pos)
-                    if vis then newDraw("Text",{Text="◆ "..f.name,Position=sc,Size=13,Color=T.Green,Center=true,Outline=true,Visible=true,ZIndex=6}) end
+                    if vis then newDraw("Text",{Text=" "..f.name,Position=sc,Size=13,Color=T.Green,Center=true,Outline=true,Visible=true,ZIndex=6}) end
                 end
             end
         end
     end))
 end
--- Billboard fallback (with distance filter — max 300 studs to avoid performance issues)
+-- Billboard fallback (with distance filter -- max 300 studs to avoid performance issues)
 task.spawn(function()
     local billObjs={}
     while task.wait(0.8) do
@@ -1683,9 +1676,9 @@ task.spawn(function()
 end)
 startESP()
 
--- ════════════════════════════════════════════
+-- ============================================
 --  GUI BUILDER
--- ════════════════════════════════════════════
+-- ============================================
 local function buildGUI()
     pcall(function() PG:FindFirstChild("EliteHub"):Destroy() end)
     local sg=Instance.new("ScreenGui"); sg.Name="EliteHub"; sg.ResetOnSpawn=false
@@ -1707,7 +1700,7 @@ local function buildGUI()
         end
     end))
 
-    -- ── TOP BAR ─────────────────────────────────────────────────────
+    -- -- TOP BAR -----------------------------------------------------
     local TB_H=30
     local tb=Instance.new("Frame"); tb.Size=UDim2.new(1,0,0,TB_H)
     tb.BackgroundColor3=T.TopBar; tb.BorderSizePixel=0; tb.Parent=win
@@ -1733,7 +1726,8 @@ local function buildGUI()
     tbInfo.Font=Enum.Font.Gotham; tbInfo.TextSize=9; tbInfo.TextColor3=T.Sub; tbInfo.Parent=tb
     RunService.Heartbeat:Connect(wrap(function()
         if not tbInfo.Parent then return end
-        tbInfo.Text="|  "..fmtClock().."  |  FPS: "..FPS.."  |  "..STATUS
+        local fpsStr = S.ShowFPS and ("  FPS: "..FPS.."  |") or ""
+        tbInfo.Text="|  "..fmtClock()..fpsStr.."  "..STATUS
         tbInfo.TextColor3=STATUS_COL
     end))
     if IS_DELTA then
@@ -1753,18 +1747,18 @@ local function buildGUI()
         b.MouseEnter:Connect(function() TweenService:Create(b,TweenInfo.new(0.1),{BackgroundTransparency=0.3}):Play() end)
         b.MouseLeave:Connect(function() TweenService:Create(b,TweenInfo.new(0.1),{BackgroundTransparency=0}):Play() end)
     end
-    winBtn(-26,Color3.fromRGB(190,50,50),"×",function()
+    winBtn(-26,Color3.fromRGB(190,50,50),"",function()
         TweenService:Create(win,TweenInfo.new(0.18),{BackgroundTransparency=1,Size=UDim2.new(0,WIN_W,0,0)}):Play()
         task.wait(0.22); sg:Destroy()
     end)
     local minimised=false
-    winBtn(-48,T.Dim,"−",function()
+    winBtn(-48,T.Dim,"",function()
         minimised=not minimised
         TweenService:Create(win,TweenInfo.new(0.22,Enum.EasingStyle.Back),
             {Size=minimised and UDim2.new(0,WIN_W,0,TB_H) or UDim2.new(0,WIN_W,0,WIN_H)}):Play()
     end)
 
-    -- ── SIDEBAR ─────────────────────────────────────────────────────
+    -- -- SIDEBAR -----------------------------------------------------
     local SB_W=120
     local sb=Instance.new("Frame"); sb.Size=UDim2.new(0,SB_W,1,-TB_H-1)
     sb.Position=UDim2.new(0,0,0,TB_H); sb.BackgroundColor3=T.SB; sb.BorderSizePixel=0; sb.Parent=win
@@ -1812,16 +1806,16 @@ local function buildGUI()
     stRow.Font=Enum.Font.Gotham; stRow.TextSize=7.5; stRow.TextXAlignment=Enum.TextXAlignment.Left; stRow.Parent=sbBot
     task.spawn(function()
         while task.wait(0.5) do if not stRow.Parent then break end
-            stRow.Text="●  "..STATUS; stRow.TextColor3=STATUS_COL
+            stRow.Text="  "..STATUS; stRow.TextColor3=STATUS_COL
         end
     end)
 
-    -- ── CONTENT AREA ────────────────────────────────────────────────
+    -- -- CONTENT AREA ------------------------------------------------
     local CA_X=SB_W+1
     local ca=Instance.new("Frame"); ca.Size=UDim2.new(1,-CA_X,1,-TB_H)
     ca.Position=UDim2.new(0,CA_X,0,TB_H); ca.BackgroundTransparency=1; ca.Parent=win
 
-    -- ── PAGE SYSTEM ─────────────────────────────────────────────────
+    -- -- PAGE SYSTEM -------------------------------------------------
     local pages,tabs,curPage={},{},nil
     local function makePage(id)
         local sc=Instance.new("ScrollingFrame"); sc.Size=UDim2.fromScale(1,1)
@@ -1883,7 +1877,7 @@ local function buildGUI()
         return function() activatePage(id) end
     end
 
-    -- ── WIDGET FACTORIES ────────────────────────────────────────────
+    -- -- WIDGET FACTORIES --------------------------------------------
     local function card(page,title,order)
         local f=Instance.new("Frame"); f.Size=UDim2.new(1,0,0,0); f.AutomaticSize=Enum.AutomaticSize.Y
         f.BackgroundColor3=T.Card; f.BorderSizePixel=0; f.LayoutOrder=order; f.Parent=page
@@ -1999,7 +1993,7 @@ local function buildGUI()
         selLbl.Text=(key and S[key]) or (opts[1] or ""); selLbl.Font=Enum.Font.GothamBold
         selLbl.TextSize=9.5; selLbl.TextColor3=T.Text; selLbl.TextXAlignment=Enum.TextXAlignment.Right; selLbl.Parent=f
         local arr=Instance.new("TextLabel"); arr.Size=UDim2.new(0,14,0,24); arr.Position=UDim2.new(1,-14,0,0)
-        arr.BackgroundTransparency=1; arr.Text="⌄"; arr.Font=Enum.Font.Gotham; arr.TextSize=10; arr.TextColor3=T.Dim; arr.Parent=f
+        arr.BackgroundTransparency=1; arr.Text=""; arr.Font=Enum.Font.Gotham; arr.TextSize=10; arr.TextColor3=T.Dim; arr.Parent=f
         local listF=Instance.new("Frame"); listF.Size=UDim2.new(1,0,0,#opts*22)
         listF.Position=UDim2.new(0,0,0,24); listF.BackgroundColor3=Color3.fromRGB(11,11,11)
         listF.BorderSizePixel=0; listF.Parent=f
@@ -2055,7 +2049,7 @@ local function buildGUI()
         return b
     end
 
-    -- ── BUILD TABS ──────────────────────────────────────────────────
+    -- -- BUILD TABS --------------------------------------------------
     sbSec("Elite Hub")
     local goFarm   = makeTab("Farm",   "Auto Farm")
     local goCombat = makeTab("Combat", "Combat")
@@ -2068,9 +2062,9 @@ local function buildGUI()
     sbSec("Info")
     local goMisc   = makeTab("Misc",   "Stats & Info")
 
-    -- ════════════════════════════════════════
+    -- ========================================
     --  PAGE: AUTO FARM
-    -- ════════════════════════════════════════
+    -- ========================================
     local pFarm=makePage("Farm")
     local fL,fR=twoCol(pFarm,1)
 
@@ -2101,7 +2095,7 @@ local function buildGUI()
         while task.wait(2) do
             if not lvValA.Parent then break end
             local lv=getLevel(); local mob=getMobForLevel(lv)
-            lvValA.Text=tostring(lv).."  →  "..mob.name
+            lvValA.Text=tostring(lv).."  ->  "..mob.name
             qValA.Text=QUEST.killsDone.." / "..(QUEST.killsNeeded>0 and tostring(QUEST.killsNeeded) or "0")
             qStateLbl.Text="Quest: "..QUEST.state:sub(1,1):upper()..QUEST.state:sub(2)
             qStateLbl.TextColor3=QUEST.state=="farming" and T.Green or QUEST.state=="idle" and T.Dim or T.Gold
@@ -2112,7 +2106,7 @@ local function buildGUI()
     toggle(cfgC,"Auto Level Farm","AutoLevelFarm",5,function(on)
         S.AutoFarm=on
         if on then local m=getMobForLevel(getLevel()); S.TargetMob=m.name; qSave()
-            setStatus("Level Farm: "..m.name,T.Gold); notify("Auto Level Farm","Lv "..getLevel().." → "..m.name,4,T.Gold)
+            setStatus("Level Farm: "..m.name,T.Gold); notify("Auto Level Farm","Lv "..getLevel().." -> "..m.name,4,T.Gold)
         else setStatus("Idle") end
     end)
     sep(cfgC,6)
@@ -2133,12 +2127,12 @@ local function buildGUI()
     local togC=card(fR,"Toggles",1)
     toggle(togC,"Auto Farm","AutoFarm",1,function(on)
         _AutoFarmActive=on
-        if on then setStatus("Farm: "..(S.TargetMob or "?"),T.Blue); notify("Farm","Started → "..(S.TargetMob or "Bandit"),3,T.Blue)
+        if on then setStatus("Farm: "..(S.TargetMob or "?"),T.Blue); notify("Farm","Started -> "..(S.TargetMob or "Bandit"),3,T.Blue)
         else _AutoFarmActive=false; setStatus("Idle"); notify("Farm","Stopped.",2) end
     end)
     toggle(togC,"Auto Quest","AutoQuest",2,function(on)
         if on then QUEST.state="idle"; QUEST.killsDone=0; setStatus("Quest: Starting...",T.Teal)
-            notify("Quest","ON — will accept & complete quests automatically",3.5,T.Teal)
+            notify("Quest","ON -- will accept & complete quests automatically",3.5,T.Teal)
         else QUEST.state="idle"; setStatus("Idle"); notify("Quest","OFF",2) end
     end)
     toggle(togC,"Bring Mob","BringMob",3)
@@ -2151,7 +2145,7 @@ local function buildGUI()
     toggle(togC,"Bypass TP","BypassTP",10)
 
     -- STOP button
-    btn(pFarm,"■  STOP ALL FARMING",Color3.fromRGB(42,14,14),2,function()
+    btn(pFarm,"  STOP ALL FARMING",Color3.fromRGB(42,14,14),2,function()
         S.AutoFarm=false; S.AutoLevelFarm=false; S.AutoQuest=false
         S.AutoBoss=false; S.AutoRaid=false; S.KillAura=false
         _AutoFarmActive=false; QUEST.state="idle"
@@ -2160,8 +2154,8 @@ local function buildGUI()
 
     -- Quick-farm buttons: Sea 1 + Sea 2 (side by side)
     local s1L,s1R=twoCol(pFarm,3)
-    local s1Lc=card(s1L,"Sea 1 — Quick Farm",1)
-    local s1Rc=card(s1R,"Sea 2 — Quick Farm",1)
+    local s1Lc=card(s1L,"Sea 1 -- Quick Farm",1)
+    local s1Rc=card(s1R,"Sea 2 -- Quick Farm",1)
     for _,name in ipairs(SEA_MOBS_LIST[1]) do
         local info=MOB_MAP[name]
         btn(s1Lc,name..(info and " [Lv."..info.minLv.."]" or ""),T.Card2,1,function()
@@ -2179,7 +2173,7 @@ local function buildGUI()
         end)
     end
     -- Sea 3 quick farm (full width, two sub-columns)
-    local s3C=card(pFarm,"Sea 3 — Quick Farm",4)
+    local s3C=card(pFarm,"Sea 3 -- Quick Farm",4)
     local s3L2,s3R2=twoCol(s3C,1)
     local half3=#SEA_MOBS_LIST[3]//2
     for i,name in ipairs(SEA_MOBS_LIST[3]) do
@@ -2191,9 +2185,9 @@ local function buildGUI()
         end)
     end
 
-    -- ════════════════════════════════════════
+    -- ========================================
     --  PAGE: COMBAT
-    -- ════════════════════════════════════════
+    -- ========================================
     local pCbt=makePage("Combat")
     local cL,cR=twoCol(pCbt,1)
 
@@ -2210,15 +2204,36 @@ local function buildGUI()
     local combatCfg=card(cL,"Attack Config",4)
     dropdown(combatCfg,"Attack Type",{"Fast","Normal","Slow"},"FastAttackType",1)
     sep(combatCfg,2)
-    -- Skill slot toggles (Z/X/C/V) — synced to _G.Settings.Configs
+    -- Skill slot toggles (Z/X/C/V) -- synced to _G.Settings.Configs
+    -- Default all skills to enabled if not already set
+    for _,sk in ipairs({"Z","X","C","V"}) do
+        local key = "Skill "..sk
+        if _G.Settings.Configs[key] == nil then _G.Settings.Configs[key] = true end
+    end
     local function skillToggle(parent,label,slot,order)
-        toggle(parent,label,nil,order,function(on)
-            _G.Settings.Configs["Skill "..slot]=on
-        end)
-        -- Init from _G.Settings
-        task.spawn(function()
-            task.wait(0.1)
-            if _G.Settings.Configs["Skill "..slot]==false then end -- already false by default toggle
+        local key = "Skill "..slot
+        -- Read current state from _G.Settings.Configs (defaults true)
+        local initVal = _G.Settings.Configs[key] ~= false
+        local row=Instance.new("Frame"); row.Size=UDim2.new(1,0,0,24); row.BackgroundTransparency=1
+        row.LayoutOrder=order; row.Parent=parent
+        local lbl2=Instance.new("TextLabel"); lbl2.Size=UDim2.new(1,-46,1,0); lbl2.BackgroundTransparency=1
+        lbl2.Text=label; lbl2.Font=Enum.Font.Gotham; lbl2.TextSize=9.5; lbl2.TextColor3=T.Sub
+        lbl2.TextXAlignment=Enum.TextXAlignment.Left; lbl2.Parent=row
+        local on=initVal
+        local track2=Instance.new("Frame"); track2.Size=UDim2.new(0,34,0,17)
+        track2.Position=UDim2.new(1,-36,0.5,-8.5); track2.BackgroundColor3=on and T.Green or T.Dim
+        track2.BorderSizePixel=0; track2.Parent=row
+        local tc2=Instance.new("UICorner"); tc2.CornerRadius=UDim.new(0,9); tc2.Parent=track2
+        local thumb2=Instance.new("Frame"); thumb2.Size=UDim2.new(0,13,0,13)
+        thumb2.Position=on and UDim2.new(1,-15,0.5,-6.5) or UDim2.new(0,2,0.5,-6.5)
+        thumb2.BackgroundColor3=Color3.new(1,1,1); thumb2.BorderSizePixel=0; thumb2.Parent=track2
+        local thc2=Instance.new("UICorner"); thc2.CornerRadius=UDim.new(0,7); thc2.Parent=thumb2
+        local hit2=Instance.new("TextButton"); hit2.Size=UDim2.fromScale(1,1); hit2.BackgroundTransparency=1
+        hit2.Text=""; hit2.Parent=row
+        hit2.MouseButton1Click:Connect(function()
+            on=not on; _G.Settings.Configs[key]=on
+            TweenService:Create(track2,TweenInfo.new(0.15),{BackgroundColor3=on and T.Green or T.Dim}):Play()
+            TweenService:Create(thumb2,TweenInfo.new(0.15),{Position=on and UDim2.new(1,-15,0.5,-6.5) or UDim2.new(0,2,0.5,-6.5)}):Play()
         end)
     end
     skillToggle(combatCfg,"Use Skill Z","Z",3)
@@ -2234,19 +2249,19 @@ local function buildGUI()
     slider(wsC,"Speed","WalkSpeed",16,350,1,function(v) local h=getHum(); if h then h.WalkSpeed=v end end)
     sep(wsC,2)
     for i,sp in ipairs({16,32,60,100,200,350}) do
-        btn(wsC,"→ "..sp,T.Card2,2+i,function() S.WalkSpeed=sp; qSave(); local h=getHum(); if h then h.WalkSpeed=sp end end)
+        btn(wsC,"-> "..sp,T.Card2,2+i,function() S.WalkSpeed=sp; qSave(); local h=getHum(); if h then h.WalkSpeed=sp end end)
     end
 
     local jpC=card(cR,"Jump Power",3)
     slider(jpC,"Power","JumpPower",50,600,1,function(v) local h=getHum(); if h then h.JumpPower=v end end)
     sep(jpC,2)
     for i,jp in ipairs({50,100,250,500}) do
-        btn(jpC,"→ "..jp,T.Card2,2+i,function() S.JumpPower=jp; qSave(); local h=getHum(); if h then h.JumpPower=jp end end)
+        btn(jpC,"-> "..jp,T.Card2,2+i,function() S.JumpPower=jp; qSave(); local h=getHum(); if h then h.JumpPower=jp end end)
     end
 
-    -- ════════════════════════════════════════
+    -- ========================================
     --  PAGE: TELEPORT
-    -- ════════════════════════════════════════
+    -- ========================================
     local pTP=makePage("TP")
     local tpL,tpR=twoCol(pTP,1)
 
@@ -2257,20 +2272,20 @@ local function buildGUI()
         if not root then notify("Fruit","No character.",2,T.Red); return end
         if #fruits==0 then notify("Fruit","No fruits found.",2,T.Red); return end
         table.sort(fruits,function(a,b) return (a.pos-root.Position).Magnitude<(b.pos-root.Position).Magnitude end)
-        tp(fruits[1].pos); STATS.fruitsTP=STATS.fruitsTP+1; notify("Fruit","→  "..fruits[1].name,3,T.Green)
+        tp(fruits[1].pos); STATS.fruitsTP=STATS.fruitsTP+1; notify("Fruit","->  "..fruits[1].name,3,T.Green)
     end)
 
     local s1iC=card(tpL,"Sea 1 Islands",2)
-    for _,d in ipairs(SEA1_ISLANDS) do btn(s1iC,d[1],T.Card2,1,function() tp(d[2]); notify("TP","→ "..d[1],2) end) end
+    for _,d in ipairs(SEA1_ISLANDS) do btn(s1iC,d[1],T.Card2,1,function() tp(d[2]); notify("TP","-> "..d[1],2) end) end
 
     local s2iC=card(tpR,"Sea 2 Islands",1)
-    for _,d in ipairs(SEA2_ISLANDS) do btn(s2iC,d[1],T.Card2,1,function() tp(d[2]); notify("TP","→ "..d[1],2) end) end
+    for _,d in ipairs(SEA2_ISLANDS) do btn(s2iC,d[1],T.Card2,1,function() tp(d[2]); notify("TP","-> "..d[1],2) end) end
     local s3iC=card(tpR,"Sea 3 Islands",2)
-    for _,d in ipairs(SEA3_ISLANDS) do btn(s3iC,d[1],T.Card2,1,function() tp(d[2]); notify("TP","→ "..d[1],2) end) end
+    for _,d in ipairs(SEA3_ISLANDS) do btn(s3iC,d[1],T.Card2,1,function() tp(d[2]); notify("TP","-> "..d[1],2) end) end
 
-    -- ════════════════════════════════════════
+    -- ========================================
     --  PAGE: BOSS
-    -- ════════════════════════════════════════
+    -- ========================================
     local pBoss=makePage("Boss")
     local bL,bR=twoCol(pBoss,1)
     local bNames={} for k in pairs(BOSS_POS) do table.insert(bNames,k) end table.sort(bNames)
@@ -2283,17 +2298,17 @@ local function buildGUI()
     end)
     sep(bCfg,4)
     btn(bCfg,"TP to Boss Now",T.Card2,5,function()
-        local pos=BOSS_POS[S.SelectedBoss]; if pos then tp(pos); notify("Boss","→ "..S.SelectedBoss,2) end
+        local pos=BOSS_POS[S.SelectedBoss]; if pos then tp(pos); notify("Boss","-> "..S.SelectedBoss,2) end
     end)
 
     local bTPc=card(bR,"Quick Boss TP",1)
     for _,n in ipairs(bNames) do
-        btn(bTPc,n,T.Card2,1,function() local pos=BOSS_POS[n]; if pos then tp(pos); notify("Boss","→ "..n,2) end end)
+        btn(bTPc,n,T.Card2,1,function() local pos=BOSS_POS[n]; if pos then tp(pos); notify("Boss","-> "..n,2) end end)
     end
 
-    -- ════════════════════════════════════════
+    -- ========================================
     --  PAGE: RAID
-    -- ════════════════════════════════════════
+    -- ========================================
     local pRaid=makePage("Raid")
     local rL,rR=twoCol(pRaid,1)
     local rNames={} for k in pairs(RAID_POS) do table.insert(rNames,k) end table.sort(rNames)
@@ -2306,17 +2321,17 @@ local function buildGUI()
     end)
     sep(rCfg,4)
     btn(rCfg,"TP to Raid Now",T.Card2,5,function()
-        local pos=RAID_POS[S.SelectedRaid]; if pos then tp(pos); notify("Raid","→ "..S.SelectedRaid,2) end
+        local pos=RAID_POS[S.SelectedRaid]; if pos then tp(pos); notify("Raid","-> "..S.SelectedRaid,2) end
     end)
 
     local rTPc=card(rR,"Quick Raid TP",1)
     for _,n in ipairs(rNames) do
-        btn(rTPc,n,T.Card2,1,function() local pos=RAID_POS[n]; if pos then tp(pos); notify("Raid","→ "..n,2) end end)
+        btn(rTPc,n,T.Card2,1,function() local pos=RAID_POS[n]; if pos then tp(pos); notify("Raid","-> "..n,2) end end)
     end
 
-    -- ════════════════════════════════════════
+    -- ========================================
     --  PAGE: ESP
-    -- ════════════════════════════════════════
+    -- ========================================
     local pESP=makePage("ESP")
     local eL,eR=twoCol(pESP,1)
 
@@ -2332,9 +2347,9 @@ local function buildGUI()
     infoRow(espInfo,"Executor",EXEC_NAME,2)
     infoRow(espInfo,"Delta",IS_DELTA and"Verified"or"No",3)
 
-    -- ════════════════════════════════════════
+    -- ========================================
     --  PAGE: VISUAL
-    -- ════════════════════════════════════════
+    -- ========================================
     local pVis=makePage("Visual")
     local vL,vR=twoCol(pVis,1)
 
@@ -2355,9 +2370,9 @@ local function buildGUI()
     local lockFPS=card(vR,"FPS Lock",2)
     slider(lockFPS,"Target FPS","HFPS",30,240,1)
 
-    -- ════════════════════════════════════════
+    -- ========================================
     --  PAGE: MISC / STATS
-    -- ════════════════════════════════════════
+    -- ========================================
     local pMisc=makePage("Misc")
     local mL,mR=twoCol(pMisc,1)
 
@@ -2400,10 +2415,10 @@ local function buildGUI()
 
     local autoStatC=card(mR,"Auto Stat",1)
     toggle(autoStatC,"Auto Distribute Stats","AutoStat",1,function(on)
-        notify("Auto Stat",on and "ON — priority: "..(S.StatPriority or "Melee") or "OFF",2.5,on and T.Gold or T.Sub)
+        notify("Auto Stat",on and "ON -- priority: "..(S.StatPriority or "Melee") or "OFF",2.5,on and T.Gold or T.Sub)
     end)
     dropdown(autoStatC,"Priority",{"Melee","Sword","Gun","Fruit","Defense"},"StatPriority",2,function(v)
-        notify("Auto Stat","Priority → "..v,2,T.Gold)
+        notify("Auto Stat","Priority -> "..v,2,T.Gold)
     end)
 
     local cfgC2=card(mR,"Config",2)
@@ -2414,7 +2429,7 @@ local function buildGUI()
     sep(cfgC2,3)
     btn(cfgC2,"Copy Discord",T.Card2,4,function()
         if HAS_CLIP then setclipboard("discord.gg/EmsMsHZCVH") end
-        notify("Discord","discord.gg/EmsMsHZCVH — copied!",2.5,T.Blue)
+        notify("Discord","discord.gg/EmsMsHZCVH -- copied!",2.5,T.Blue)
     end)
 
     local aboutC=card(mR,"About",3)
@@ -2427,9 +2442,9 @@ local function buildGUI()
     return sg
 end
 
--- ════════════════════════════════════════════
+-- ============================================
 --  GAME LOOPS
--- ════════════════════════════════════════════
+-- ============================================
 
 -- Fly (WASD + Space/Ctrl)
 task.spawn(function()
@@ -2499,17 +2514,20 @@ task.spawn(function()
     end
 end)
 
--- FPS Lock (limits Heartbeat frequency via throttle sleep)
+-- FPS Lock (throttles the frame loop when HFPS is set below native rate)
 task.spawn(function()
-    while task.wait(0) do
-        if not S.HFPS or S.HFPS <= 0 then continue end
-        local target = S.HFPS
-        if target < 10 or target > 240 then continue end
-        local budget = 1 / target
-        local t0 = tick()
+    while true do
         RunService.Heartbeat:Wait()
-        local elapsed = tick() - t0
-        if elapsed < budget then task.wait(budget - elapsed) end
+        local target = S.HFPS
+        if target and target >= 10 and target <= 240 then
+            local budget = 1 / target
+            local t0 = tick()
+            RunService.Heartbeat:Wait()
+            local elapsed = tick() - t0
+            if elapsed < budget then
+                task.wait(budget - elapsed)
+            end
+        end
     end
 end)
 
@@ -2522,9 +2540,9 @@ LP.CharacterAdded:Connect(function(char)
     end) end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  QUEST STATE MACHINE LOOP
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(function()
     local SetCFarme = 1
     while task.wait(0.5) do
@@ -2573,7 +2591,7 @@ task.spawn(function()
             task.wait(0.4)
             QUEST.state="farming"
             setStatus("Quest: Farming "..QUEST.mob.name.." (0/"..QUEST.killsNeeded..")",T.Green)
-            notify("Quest","Accepted! Kill "..QUEST.killsNeeded.."× "..QUEST.mob.name,4,T.Teal)
+            notify("Quest","Accepted! Kill "..QUEST.killsNeeded.." "..QUEST.mob.name,4,T.Teal)
 
         elseif QUEST.state=="farming" then
             if not isAlive() then task.wait(3); continue end
@@ -2628,9 +2646,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  MAIN FARM LOOP
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(function()
     while task.wait(S.FarmDelay or 0.1) do
         if not S.AutoFarm and not S.AutoLevelFarm then continue end
@@ -2657,9 +2675,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  KILL AURA LOOP  (skips boss-tagged mobs)
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(function()
     while task.wait(0.07) do
         if not S.KillAura or not isAlive() then continue end
@@ -2667,16 +2685,16 @@ task.spawn(function()
         for _,info in ipairs(nearby) do
             if not S.KillAura then break end
             local n=info.obj.Name:lower()
-            -- Skip boss mobs — they have huge HP and aura-ing them is unintended
+            -- Skip boss mobs -- they have huge HP and aura-ing them is unintended
             if n:find("boss") or n:find("king") or n:find("admiral") or n:find("greybeard") or n:find("darkbeard") then continue end
             attackMob(info.obj); task.wait(0.04)
         end
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  AUTO BOSS LOOP
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(function()
     while task.wait(0.15) do
         if not S.AutoBoss or not isAlive() then continue end
@@ -2689,9 +2707,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  AUTO RAID LOOP
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(function()
     while task.wait(0.15) do
         if not S.AutoRaid or not isAlive() then continue end
@@ -2702,12 +2720,12 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  AUTO STAT LOOP  (distribute unspent stat points)
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(function()
     local statMap = {
-        Melee    = "Beli",   -- CommF_ stat key names used by BF server
+        Melee    = "Melee",
         Defense  = "Defense",
         Sword    = "Sword",
         Gun      = "Gun",
@@ -2716,7 +2734,7 @@ task.spawn(function()
     while task.wait(4) do
         if not S.AutoStat or not isAlive() then continue end
         pcall(function()
-            local statKey = statMap[S.StatPriority] or "Beli"
+            local statKey = statMap[S.StatPriority] or "Melee"
             -- Try the CommF_ stat upgrade route (most BF versions)
             Com("F_","Stat", statKey)
             Com("F_","AddStat", statKey, 1)
@@ -2738,9 +2756,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
---  AUTO FRUIT TP LOOP  (dedup — tracks already-visited fruits)
--- ════════════════════════════════════════════
+-- ============================================
+--  AUTO FRUIT TP LOOP  (dedup -- tracks already-visited fruits)
+-- ============================================
 task.spawn(function()
     local visited = {}
     while task.wait(3) do
@@ -2754,7 +2772,7 @@ task.spawn(function()
         table.sort(fresh,function(a,b) return (a.pos-root.Position).Magnitude<(b.pos-root.Position).Magnitude end)
         local f=fresh[1]; tp(f.pos); STATS.fruitsTP=STATS.fruitsTP+1
         visited[f.obj]=true
-        notify("Fruit","→  "..f.name,3,T.Green)
+        notify("Fruit","->  "..f.name,3,T.Green)
         if S.AutoEatFruit then
             task.wait(1)
             pcall(function()
@@ -2782,9 +2800,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
---  AUTO CHEST LOOP  (deduplication — won't re-open same chest)
--- ════════════════════════════════════════════
+-- ============================================
+--  AUTO CHEST LOOP  (deduplication -- won't re-open same chest)
+-- ============================================
 task.spawn(function()
     local opened = {}   -- track object refs that were already opened this session
     while task.wait(4) do
@@ -2821,9 +2839,9 @@ task.spawn(function()
     end
 end)
 
--- ════════════════════════════════════════════
+-- ============================================
 --  INSERT KEY HOTKEY  (toggle GUI visibility)
--- ════════════════════════════════════════════
+-- ============================================
 UserInputService.InputBegan:Connect(wrap(function(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.Insert then
@@ -2835,14 +2853,14 @@ UserInputService.InputBegan:Connect(wrap(function(input, gameProcessed)
     end
 end))
 
--- ════════════════════════════════════════════
+-- ============================================
 --  STARTUP
--- ════════════════════════════════════════════
+-- ============================================
 task.spawn(showLoader)
 buildWatermark()
 task.wait(1.0)
 buildGUI()
 task.wait(0.3)
 notify("Elite Hub","v1.0.0 loaded!  discord.gg/EmsMsHZCVH",4.5,T.Pink)
-notify("Executor",EXEC_NAME..(IS_DELTA and "  ✓ Delta Verified" or ""),3,IS_DELTA and T.Blue or T.Sub)
+notify("Executor",EXEC_NAME..(IS_DELTA and "  [OK] Delta Verified" or ""),3,IS_DELTA and T.Blue or T.Sub)
 notify("Hotkey","Press [Insert] to show/hide the UI",3,T.Dim)
