@@ -1,0 +1,1431 @@
+-- ts file was generated at discord.gg/25ms
+
+local v1 = loadstring(game:HttpGet('https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua'))()
+
+loadstring(game:HttpGet('https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua'))()
+
+local _Players = game:GetService('Players')
+local _ = _Players.LocalPlayer
+local _Workspace = game:GetService('Workspace')
+
+game:GetService('Workspace'):FindFirstChild('Game')
+
+local v4 = v1:CreateWindow({
+    Title = 'Aoi Scripts (Jailbreak))',
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = 'Dark',
+    MinimizeKey = Enum.KeyCode.RightShift,
+})
+local v5 = {
+    Main = v4:AddTab({
+        Title = 'Main',
+        Icon = '',
+    }),
+    ESP = v4:AddTab({
+        Title = 'ESP',
+        Icon = '',
+    }),
+    Misc = v4:AddTab({
+        Title = 'Misc',
+        Icon = '',
+    }),
+    Robberies = v4:AddTab({
+        Title = 'Robberies',
+        Icon = '',
+    }),
+}
+
+v5.Main:AddButton({
+    Title = 'Give Items',
+    Callback = function()
+        if workspace:FindFirstChild('Givers') then
+            local _LocalPlayer = _Players.LocalPlayer
+            local _Workspace2 = game:GetService('Workspace')
+            local v8 = nil
+
+            if v8 then
+                local v9, v10, v11 = pairs(v8)
+
+                while true do
+                    local v12
+
+                    v11, v12 = v9(v10, v11)
+
+                    if v11 == nil then
+                        break
+                    end
+
+                    v12.ClickDetector.Parent = v12.OriginalParent
+
+                    v12.Event:Disconnect()
+                end
+
+                getmetatable(v8):Destroy()
+            end
+
+            local u13 = {}
+            local _Part = Instance.new('Part', _Workspace2)
+
+            _Part.Anchored = true
+            _Part.CanCollide = false
+            _Part.CFrame = _LocalPlayer.Character:WaitForChild('HumanoidRootPart').CFrame
+
+            setmetatable(u13, {__metatable = _Part})
+
+            local v15, v16, v17 = pairs(_Workspace2.Givers:GetChildren())
+            local u18 = u13
+
+            while true do
+                local u19
+
+                v17, u19 = v15(v16, v17)
+
+                if v17 == nil then
+                    break
+                end
+
+                local _ClickDetector = u19:FindFirstChildOfClass('ClickDetector')
+
+                if _ClickDetector then
+                    local v21 = {
+                        ClickDetector = _ClickDetector,
+                        OriginalParent = u19,
+                    }
+
+                    _ClickDetector.Parent = _Part
+                    v21.Event = _ClickDetector.MouseClick:Connect(function()
+                        _ClickDetector.Parent = u19
+                    end)
+
+                    table.insert(u13, v21)
+                end
+            end
+
+            spawn(function()
+                wait(10)
+
+                if u13 == u18 then
+                    u13 = nil
+
+                    local v22, v23, v24 = pairs(u18)
+
+                    while true do
+                        local v25
+
+                        v24, v25 = v22(v23, v24)
+
+                        if v24 == nil then
+                            break
+                        end
+
+                        v25.ClickDetector.Parent = v25.OriginalParent
+
+                        v25.Event:Disconnect()
+                    end
+
+                    getmetatable(u18):Destroy()
+                end
+            end)
+        end
+    end,
+})
+v5.Main:AddParagraph({
+    Title = 'Give Items',
+    Content = 'Pistol, Baton, Shotgun and SWAT stuff (if you bought)',
+})
+v5.Main:AddButton({
+    Title = 'Give Glider',
+    Callback = function()
+        local _LocalPlayer2 = _Players.LocalPlayer
+        local _Workspace3 = game:GetService('Workspace')
+        local v28 = nil
+
+        if _Workspace3:FindFirstChild('Givers') then
+            if v28 then
+                local v29, v30, v31 = pairs(v28)
+
+                while true do
+                    local v32
+
+                    v31, v32 = v29(v30, v31)
+
+                    if v31 == nil then
+                        break
+                    end
+
+                    v32.ClickDetector.Parent = v32.OriginalParent
+
+                    v32.Event:Disconnect()
+                end
+
+                getmetatable(v28).__metatable = nil
+            end
+
+            local u33 = {}
+            local u34 = u33
+            local _Part2 = Instance.new('Part', _Workspace3)
+
+            _Part2.Anchored = true
+            _Part2.CanCollide = false
+            _Part2.CFrame = _LocalPlayer2.Character:WaitForChild('HumanoidRootPart').CFrame
+
+            setmetatable(u33, {__metatable = _Part2})
+
+            local _Glider = _Workspace3.Givers:FindFirstChild('Glider')
+            local u37 = _Glider and _Glider:FindFirstChildOfClass('ClickDetector')
+
+            if u37 then
+                local v38 = {
+                    ClickDetector = u37,
+                    OriginalParent = _Glider,
+                }
+
+                u37.Parent = _Part2
+                v38.Event = u37.MouseClick:Connect(function()
+                    u37.Parent = _Glider
+                end)
+
+                table.insert(u33, v38)
+            end
+
+            spawn(function()
+                wait(10)
+
+                if u33 == u34 then
+                    u33 = nil
+
+                    local v39, v40, v41 = pairs(u34)
+
+                    while true do
+                        local v42
+
+                        v41, v42 = v39(v40, v41)
+
+                        if v41 == nil then
+                            break
+                        end
+
+                        v42.ClickDetector.Parent = v42.OriginalParent
+
+                        v42.Event:Disconnect()
+                    end
+
+                    getmetatable(u34).__metatable = nil
+                end
+            end)
+        end
+    end,
+})
+
+local _Players2 = game:GetService('Players')
+local _ESP = v5.ESP:AddToggle('ESP', {
+    Title = 'ESP',
+    Default = false,
+})
+local u45 = false
+local u46 = false
+local u47 = false
+local u48 = false
+local u49 = false
+local u50 = {}
+
+local function u55()
+    local v51, v52, v53 = pairs(u50)
+
+    while true do
+        local v54
+
+        v53, v54 = v51(v52, v53)
+
+        if v53 == nil then
+            break
+        end
+        if v54.Line then
+            v54.Line:Remove()
+        end
+        if v54.NameLabel then
+            v54.NameLabel:Remove()
+        end
+        if v54.Box then
+            v54.Box:Remove()
+        end
+        if v54.DistanceLabel then
+            v54.DistanceLabel:Remove()
+        end
+    end
+
+    u50 = {}
+end
+local function u75()
+    u55()
+
+    if u45 then
+        local _LocalPlayer3 = _Players2.LocalPlayer
+        local _Character = _LocalPlayer3.Character
+
+        if _Character then
+            _Character = _Character:FindFirstChild('HumanoidRootPart')
+        end
+        if _Character then
+            _Character = _Character.Position
+        end
+
+        local v58 = _Players2
+        local v59, v60, v61 = pairs(v58:GetPlayers())
+
+        while true do
+            local v62
+
+            v61, v62 = v59(v60, v61)
+
+            if v61 == nil then
+                break
+            end
+            if v62 ~= _Players2.LocalPlayer then
+                local _Character2 = v62.Character
+
+                if _Character2 and _Character2:FindFirstChild('HumanoidRootPart') then
+                    local _Position = _Character2.HumanoidRootPart.Position
+                    local v65 = Color3.new(1, 1, 1)
+
+                    if v62.TeamColor ~= BrickColor.new('Bright red') then
+                        if v62.TeamColor ~= BrickColor.new('Bright blue') then
+                            if v62.TeamColor == BrickColor.new('Bright orange') then
+                                v65 = Color3.new(1, 0.5, 0)
+                            end
+                        else
+                            v65 = Color3.new(0, 0, 1)
+                        end
+                    else
+                        v65 = Color3.new(1, 0, 0)
+                    end
+
+                    local v66, v67 = _Workspace.CurrentCamera:WorldToViewportPoint(_Position)
+                    local v68
+
+                    if _Character then
+                        v68 = _Workspace.CurrentCamera:WorldToViewportPoint(_Character)
+                    else
+                        v68 = _Character
+                    end
+                    if v67 and (v68 and (v68.Z > 0 and v62 ~= _LocalPlayer3)) then
+                        if u46 then
+                            local _Line = Drawing.new('Line')
+
+                            _Line.Visible = true
+                            _Line.From = Vector2.new(v68.X, v68.Y)
+                            _Line.To = Vector2.new(v66.X, v66.Y)
+                            _Line.Color = v65
+                            _Line.Thickness = 2
+
+                            table.insert(u50, {Line = _Line})
+                        end
+                        if u48 then
+                            local _Text = Drawing.new('Text')
+
+                            _Text.Visible = true
+                            _Text.Position = Vector2.new(v66.X, v66.Y)
+                            _Text.Size = 18
+                            _Text.Color = v65
+                            _Text.Center = true
+                            _Text.Outline = true
+                            _Text.Text = v62.Name
+
+                            table.insert(u50, {NameLabel = _Text})
+                        end
+                        if u47 then
+                            local _Square = Drawing.new('Square')
+
+                            _Square.Visible = true
+                            _Square.Position = Vector2.new(v66.X - 15, v66.Y - 30)
+                            _Square.Size = Vector2.new(30, 30)
+                            _Square.Color = v65
+                            _Square.Thickness = 2
+
+                            table.insert(u50, {Box = _Square})
+                        end
+
+                        local _Magnitude = (_Position - (_Character or Vector3.new())).Magnitude
+                        local __1fm = string.format('%.1f m', _Magnitude)
+
+                        if u49 then
+                            local _Text2 = Drawing.new('Text')
+
+                            _Text2.Visible = true
+                            _Text2.Position = Vector2.new(v66.X, v66.Y + 15)
+                            _Text2.Size = 18
+                            _Text2.Color = v65
+                            _Text2.Center = true
+                            _Text2.Outline = true
+                            _Text2.Text = __1fm
+
+                            table.insert(u50, {DistanceLabel = _Text2})
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+local _Tracers = v5.ESP:AddToggle('Tracers', {
+    Title = 'Tracers',
+    Default = false,
+})
+local _Boxes = v5.ESP:AddToggle('Boxes', {
+    Title = 'Boxes',
+    Default = false,
+})
+local _Names = v5.ESP:AddToggle('Names', {
+    Title = 'Names',
+    Default = false,
+})
+local _Distance = v5.ESP:AddToggle('Distance', {
+    Title = 'Distance',
+    Default = false,
+})
+
+_Tracers:OnChanged(function(p80)
+    u46 = p80
+
+    if u45 then
+        u55()
+    end
+end)
+_Boxes:OnChanged(function(p81)
+    u47 = p81
+
+    if u45 then
+        u55()
+    end
+end)
+_Names:OnChanged(function(p82)
+    u48 = p82
+
+    if u45 then
+        u55()
+    end
+end)
+_Distance:OnChanged(function(p83)
+    u49 = p83
+
+    if u45 then
+        u55()
+    end
+end)
+_ESP:OnChanged(function(p84)
+    u45 = p84
+
+    if not u45 then
+        u55()
+    end
+end)
+game:GetService('RunService').RenderStepped:Connect(function()
+    if u45 then
+        u75()
+    end
+end)
+game:GetService('RunService').RenderStepped:Connect(function()
+    if DropESPEnabled then
+        updateDropESP()
+    end
+end)
+v5.Robberies:AddSection('Tomb')
+
+local u85 = {}
+
+v5.Robberies:AddToggle('RemoveSpikes', {
+    Title = 'Remove Spikes',
+    Default = false,
+    Callback = function(p86)
+        local _SpikeRoom = _Workspace:FindFirstChild('RobberyTomb'):FindFirstChild('SpikeRoom')
+        local v88 = _SpikeRoom and _SpikeRoom:FindFirstChild('Spikes')
+
+        if v88 then
+            if p86 then
+                u85 = {}
+
+                local v89, v90, v91 = pairs(v88:GetChildren())
+
+                while true do
+                    local v92
+
+                    v91, v92 = v89(v90, v91)
+
+                    if v91 == nil then
+                        break
+                    end
+                    if v92:IsA('Model') then
+                        local v93, v94, v95 = pairs(v92:GetChildren())
+
+                        while true do
+                            local v96
+
+                            v95, v96 = v93(v94, v95)
+
+                            if v95 == nil then
+                                break
+                            end
+                            if v96:IsA('Model') and v96.Name == 'Tile' then
+                                local v97, v98, v99 = pairs(v96:GetChildren())
+
+                                while true do
+                                    local v100
+
+                                    v99, v100 = v97(v98, v99)
+
+                                    if v99 == nil then
+                                        break
+                                    end
+                                    if v100:IsA('Model') and v100.Name == 'Model' then
+                                        table.insert(u85, {
+                                            v100:Clone(),
+                                            v96,
+                                        })
+                                        v100:Destroy()
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            else
+                local v101, v102, v103 = pairs(u85)
+
+                while true do
+                    local v104
+
+                    v103, v104 = v101(v102, v103)
+
+                    if v103 == nil then
+                        break
+                    end
+
+                    v104[1].Parent = v104[2]
+                end
+
+                u85 = {}
+            end
+        end
+    end,
+})
+
+local u105 = {}
+
+v5.Robberies:AddToggle('DeleteDarts', {
+    Title = 'Remove Darts',
+    Default = false,
+    Callback = function(p106)
+        local _DartRoom = _Workspace:FindFirstChild('RobberyTomb'):FindFirstChild('DartRoom')
+        local v108 = _DartRoom and _DartRoom:FindFirstChild('Darts')
+
+        if v108 then
+            if p106 then
+                u105 = {}
+
+                local v109, v110, v111 = pairs(v108:GetChildren())
+
+                while true do
+                    local v112
+
+                    v111, v112 = v109(v110, v111)
+
+                    if v111 == nil then
+                        break
+                    end
+                    if v112:IsA('BasePart') then
+                        table.insert(u105, v112:Clone())
+                        v112:Destroy()
+                    end
+                end
+            else
+                local v113, v114, v115 = pairs(u105)
+
+                while true do
+                    local v116
+
+                    v115, v116 = v113(v114, v115)
+
+                    if v115 == nil then
+                        break
+                    end
+
+                    v116.Parent = v108
+                end
+
+                u105 = {}
+            end
+        end
+    end,
+})
+
+local u117 = {}
+
+local function u121()
+    local _RobberyTomb = _Workspace:FindFirstChild('RobberyTomb')
+
+    if _RobberyTomb then
+        local _Cart = _RobberyTomb:FindFirstChild('Cart')
+        local v120 = _Cart and _Cart:FindFirstChild('Planks')
+
+        if v120 then
+            table.insert(u117, {
+                model = v120:Clone(),
+                parent = v120.Parent,
+            })
+            v120:Destroy()
+        end
+    end
+end
+local function u126()
+    local v122, v123, v124 = ipairs(u117)
+
+    while true do
+        local v125
+
+        v124, v125 = v122(v123, v124)
+
+        if v124 == nil then
+            break
+        end
+        if v125.model.Parent == nil then
+            v125.model.Parent = v125.parent
+        end
+    end
+
+    u117 = {}
+end
+
+v5.Robberies:AddToggle('RemovePlanks', {
+    Title = 'Remove Planks',
+    Default = false,
+    Callback = function(p127)
+        if p127 then
+            u121()
+        else
+            u126()
+        end
+    end,
+})
+
+local u128 = {}
+
+local function u131()
+    local _RobberyTomb2 = _Workspace:FindFirstChild('RobberyTomb')
+    local v130 = _RobberyTomb2 and _RobberyTomb2:FindFirstChild('Kill')
+
+    if v130 then
+        table.insert(u128, {
+            model = v130:Clone(),
+            parent = v130.Parent,
+        })
+        v130:Destroy()
+    end
+end
+local function u136()
+    local v132, v133, v134 = ipairs(u128)
+
+    while true do
+        local v135
+
+        v134, v135 = v132(v133, v134)
+
+        if v134 == nil then
+            break
+        end
+        if v135.model.Parent == nil then
+            v135.model.Parent = v135.parent
+        end
+    end
+
+    u128 = {}
+end
+
+v5.Robberies:AddToggle('RemoveKillModel', {
+    Title = 'Remove Lava Damage',
+    Default = false,
+    Callback = function(p137)
+        if p137 then
+            u131()
+        else
+            u136()
+        end
+    end,
+})
+v5.Robberies:AddSection('PowerPlant')
+
+local u138 = {}
+
+local function u149(p139)
+    local v140, v141, v142 = pairs(p139:GetChildren())
+
+    while true do
+        while true do
+            local v143
+
+            v142, v143 = v140(v141, v142)
+
+            if v142 == nil then
+                return
+            end
+            if not v143:IsA('Model') or v143.Name ~= 'Model' then
+                break
+            end
+
+            local v144, v145, v146 = pairs(v143:GetDescendants())
+            local v147 = false
+
+            while true do
+                local v148
+
+                v146, v148 = v144(v145, v146)
+
+                if v146 == nil then
+                    break
+                end
+                if v148:IsA('BasePart') and v148.Name == 'BarbedWire' then
+                    v147 = true
+
+                    break
+                end
+            end
+
+            if v147 then
+                table.insert(u138, v143:Clone())
+                v143:Destroy()
+            end
+        end
+
+        u149(v143)
+    end
+end
+
+v5.Robberies:AddToggle('RemoveBarbedWireModel', {
+    Title = 'Remove Lasers',
+    Default = false,
+    Callback = function(p150)
+        if p150 then
+            u149(workspace)
+        else
+            local v151, v152, v153 = pairs(u138)
+
+            while true do
+                local v154
+
+                v153, v154 = v151(v152, v153)
+
+                if v153 == nil then
+                    break
+                end
+
+                v154.Parent = workspace
+            end
+
+            u138 = {}
+        end
+    end,
+})
+v5.Robberies:AddSection('Jelwery')
+v5.Robberies:AddToggle('RemoveBarbedWireAndCamera', {
+    Title = 'Not working',
+    Default = false,
+    Callback = function(_) end,
+})
+v5.Robberies:AddSection('Bank')
+
+local u155 = {}
+
+local function u161(p156)
+    local v157, v158, v159 = pairs(p156:GetChildren())
+
+    while true do
+        local v160
+
+        v159, v160 = v157(v158, v159)
+
+        if v159 == nil then
+            break
+        end
+        if v160:IsA('Model') and v160.Name == 'Lasers' then
+            table.insert(u155, v160:Clone())
+            v160:Destroy()
+        else
+            u161(v160)
+        end
+    end
+end
+
+v5.Robberies:AddToggle('RemoveLasersBank1', {
+    Title = 'Remove 1st city Bank Lasers',
+    Default = false,
+    Callback = function(p162)
+        local _Banks = workspace:FindFirstChild('Banks')
+        local v164 = _Banks and _Banks:FindFirstChild('Bank')
+
+        if v164 then
+            if p162 then
+                u161(v164)
+            else
+                local v165, v166, v167 = pairs(u155)
+
+                while true do
+                    local v168
+
+                    v167, v168 = v165(v166, v167)
+
+                    if v167 == nil then
+                        break
+                    end
+
+                    v168.Parent = v164
+                end
+
+                u155 = {}
+            end
+        end
+    end,
+})
+
+local u169 = {}
+
+local function u175(p170)
+    local v171, v172, v173 = pairs(p170:GetChildren())
+
+    while true do
+        local v174
+
+        v173, v174 = v171(v172, v173)
+
+        if v173 == nil then
+            break
+        end
+        if v174:IsA('Model') and v174.Name == 'Lasers' then
+            table.insert(u169, v174:Clone())
+            v174:Destroy()
+        else
+            u175(v174)
+        end
+    end
+end
+
+v5.Robberies:AddToggle('RemoveBank2Lasers', {
+    Title = 'Remove 2nd city Bank Lasers',
+    Default = false,
+    Callback = function(p176)
+        local _Banks2 = workspace:FindFirstChild('Banks')
+
+        if _Banks2 then
+            local _Bank2 = _Banks2:FindFirstChild('Bank2')
+            local v179 = _Bank2 and _Bank2:FindFirstChild('Layout')
+
+            if v179 then
+                if p176 then
+                    u175(v179)
+                else
+                    local v180, v181, v182 = pairs(u169)
+
+                    while true do
+                        local v183
+
+                        v182, v183 = v180(v181, v182)
+
+                        if v182 == nil then
+                            break
+                        end
+
+                        v183.Parent = v179
+                    end
+
+                    u169 = {}
+                end
+            end
+        end
+    end,
+})
+v5.Robberies:AddSection('Casino')
+
+local u184 = {}
+
+local function u191(p185, p186)
+    local v187, v188, v189 = pairs(p185:GetChildren())
+
+    while true do
+        local v190
+
+        v189, v190 = v187(v188, v189)
+
+        if v189 == nil then
+            break
+        end
+        if v190:IsA('Model') and table.find(p186, v190.Name) then
+            u184[v190.Name] = v190:Clone()
+
+            v190:Destroy()
+        else
+            u191(v190, p186)
+        end
+    end
+end
+local function u196()
+    local v192, v193, v194 = pairs(u184)
+
+    while true do
+        local v195
+
+        v194, v195 = v192(v193, v194)
+
+        if v194 == nil then
+            break
+        end
+
+        v195.Parent = workspace
+    end
+
+    u184 = {}
+end
+
+v5.Robberies:AddToggle('RemoveCasinoModels', {
+    Title = 'Remove Lasers',
+    Default = false,
+    Callback = function(p197)
+        if p197 then
+            u191(workspace, {
+                'Lasers',
+                'CamerasMoving',
+                'LaserCarousel',
+                'LasersMoving',
+                'VaultLaserControl',
+            })
+        else
+            u196()
+        end
+    end,
+})
+v5.Robberies:AddSection('Museum')
+
+local u198 = nil
+
+local function u202(p199)
+    local _Museum = p199:FindFirstChild('Museum')
+    local v201 = _Museum and _Museum:FindFirstChild('Lights')
+
+    if v201 then
+        u198 = v201:Clone()
+
+        v201:Destroy()
+    end
+end
+local function u203()
+    if u198 then
+        u198.Parent = workspace.Museum
+        u198 = nil
+    end
+end
+
+v5.Robberies:AddToggle('RemoveMuseumLaser', {
+    Title = 'Remove Lasers',
+    Default = false,
+    Callback = function(p204)
+        if p204 then
+            u202(workspace)
+        else
+            u203()
+        end
+    end,
+})
+v5.Robberies:AddSection('Mansion')
+
+local u205 = {}
+local u206 = {}
+local u207 = {}
+local u208 = {}
+local u209 = {}
+
+local function u220()
+    local _MansionDecorative = _Workspace:FindFirstChild('MansionDecorative')
+
+    if _MansionDecorative then
+        local v211, v212, v213 = pairs(_MansionDecorative:GetDescendants())
+
+        while true do
+            local v214
+
+            v213, v214 = v211(v212, v213)
+
+            if v213 == nil then
+                break
+            end
+            if v214:IsA('BasePart') and v214.Name == 'BarbedWire' then
+                table.insert(u205, {
+                    part = v214:Clone(),
+                    parent = v214.Parent,
+                })
+                v214:Destroy()
+            end
+        end
+    end
+
+    local v215 = _Workspace
+    local v216, v217, v218 = pairs(v215:GetChildren())
+
+    while true do
+        local v219
+
+        v218, v219 = v216(v217, v218)
+
+        if v218 == nil then
+            break
+        end
+        if v219:IsA('BasePart') and v219.Name == 'BarbedWire' then
+            table.insert(u205, {
+                part = v219:Clone(),
+                parent = v219.Parent,
+            })
+            v219:Destroy()
+        end
+    end
+end
+local function u225()
+    local v221, v222, v223 = ipairs(u205)
+
+    while true do
+        local v224
+
+        v223, v224 = v221(v222, v223)
+
+        if v223 == nil then
+            break
+        end
+        if v224.part.Parent == nil then
+            v224.part.Parent = v224.parent
+        end
+    end
+
+    u205 = {}
+end
+local function u228()
+    local _MansionRobbery = _Workspace:FindFirstChild('MansionRobbery')
+    local v227 = _MansionRobbery and _MansionRobbery:FindFirstChild('Lasers')
+
+    if v227 then
+        table.insert(u206, {
+            model = v227:Clone(),
+            parent = v227.Parent,
+        })
+        v227:Destroy()
+    end
+end
+local function u233()
+    local v229, v230, v231 = ipairs(u206)
+
+    while true do
+        local v232
+
+        v231, v232 = v229(v230, v231)
+
+        if v231 == nil then
+            break
+        end
+        if v232.model.Parent == nil then
+            v232.model.Parent = v232.parent
+        end
+    end
+
+    u206 = {}
+end
+local function u236()
+    local _MansionRobbery2 = _Workspace:FindFirstChild('MansionRobbery')
+    local v235 = _MansionRobbery2 and _MansionRobbery2:FindFirstChild('LaserTraps')
+
+    if v235 then
+        table.insert(u207, {
+            model = v235:Clone(),
+            parent = v235.Parent,
+        })
+        v235:Destroy()
+    end
+end
+local function u241()
+    local v237, v238, v239 = ipairs(u207)
+
+    while true do
+        local v240
+
+        v239, v240 = v237(v238, v239)
+
+        if v239 == nil then
+            break
+        end
+        if v240.model.Parent == nil then
+            v240.model.Parent = v240.parent
+        end
+    end
+
+    u207 = {}
+end
+local function u244()
+    local _MansionRobbery3 = _Workspace:FindFirstChild('MansionRobbery')
+    local v243 = _MansionRobbery3 and _MansionRobbery3:FindFirstChild('GuardsFolder')
+
+    if v243 then
+        table.insert(u208, {
+            folder = v243:Clone(),
+            parent = v243.Parent,
+        })
+        v243:Destroy()
+    end
+end
+local function u249()
+    local v245, v246, v247 = ipairs(u208)
+
+    while true do
+        local v248
+
+        v247, v248 = v245(v246, v247)
+
+        if v247 == nil then
+            break
+        end
+        if v248.folder.Parent == nil then
+            v248.folder.Parent = v248.parent
+        end
+    end
+
+    u208 = {}
+end
+local function u252()
+    local _MansionRobbery4 = _Workspace:FindFirstChild('MansionRobbery')
+    local v251 = _MansionRobbery4 and _MansionRobbery4:FindFirstChild('Shields')
+
+    if v251 then
+        table.insert(u209, {
+            model = v251:Clone(),
+            parent = v251.Parent,
+        })
+        v251:Destroy()
+    end
+end
+local function u257()
+    local v253, v254, v255 = ipairs(u209)
+
+    while true do
+        local v256
+
+        v255, v256 = v253(v254, v255)
+
+        if v255 == nil then
+            break
+        end
+        if v256.model.Parent == nil then
+            v256.model.Parent = v256.parent
+        end
+    end
+
+    u209 = {}
+end
+
+v5.Robberies:AddToggle('RemoveBarbedWireAndLasers', {
+    Title = 'Remove Lasers',
+    Default = false,
+    Callback = function(p258)
+        if p258 then
+            u220()
+            u228()
+        else
+            u225()
+            u233()
+        end
+    end,
+})
+v5.Robberies:AddToggle('RemoveLaserTraps', {
+    Title = 'Remove Laser Traps',
+    Default = false,
+    Callback = function(p259)
+        if p259 then
+            u236()
+        else
+            u241()
+        end
+    end,
+})
+v5.Robberies:AddToggle('RemoveGuardsFolder', {
+    Title = 'Remove NPCs',
+    Default = false,
+    Callback = function(p260)
+        if p260 then
+            u244()
+        else
+            u249()
+        end
+    end,
+})
+v5.Robberies:AddToggle('RemoveShields', {
+    Title = 'Remove CEO Walls',
+    Default = false,
+    Callback = function(p261)
+        if p261 then
+            u252()
+        else
+            u257()
+        end
+    end,
+})
+v5.Robberies:AddSection('Oil Rig')
+
+local u262 = {}
+
+local function u265()
+    local _OilRig = _Workspace:FindFirstChild('OilRig')
+    local v264 = _OilRig and _OilRig:FindFirstChild('GuardsFolder')
+
+    if v264 then
+        table.insert(u262, {
+            folder = v264:Clone(),
+            parent = v264.Parent,
+        })
+        v264:Destroy()
+    end
+end
+local function u270()
+    local v266, v267, v268 = ipairs(u262)
+
+    while true do
+        local v269
+
+        v268, v269 = v266(v267, v268)
+
+        if v268 == nil then
+            break
+        end
+        if v269.folder.Parent == nil then
+            v269.folder.Parent = v269.parent
+        end
+    end
+
+    u262 = {}
+end
+
+v5.Robberies:AddToggle('RemoveGuardsFolder', {
+    Title = 'Remove NPCs',
+    Default = false,
+    Callback = function(p271)
+        if p271 then
+            u265()
+        else
+            u270()
+        end
+    end,
+})
+
+local u272 = {}
+
+local function u275()
+    local _OilRig2 = _Workspace:FindFirstChild('OilRig')
+    local v274 = _OilRig2 and _OilRig2:FindFirstChild('MovingLasers')
+
+    if v274 then
+        table.insert(u272, {
+            model = v274:Clone(),
+            parent = v274.Parent,
+        })
+        v274:Destroy()
+    end
+end
+local function u280()
+    local v276, v277, v278 = ipairs(u272)
+
+    while true do
+        local v279
+
+        v278, v279 = v276(v277, v278)
+
+        if v278 == nil then
+            break
+        end
+        if v279.model.Parent == nil then
+            v279.model.Parent = v279.parent
+        end
+    end
+
+    u272 = {}
+end
+
+v5.Robberies:AddToggle('RemoveMovingLasers', {
+    Title = 'Remove Lasers',
+    Default = false,
+    Callback = function(p281)
+        if p281 then
+            u275()
+        else
+            u280()
+        end
+    end,
+})
+
+local u282 = {}
+
+local function u285()
+    local _OilRig3 = _Workspace:FindFirstChild('OilRig')
+    local v284 = _OilRig3 and _OilRig3:FindFirstChild('Turrets')
+
+    if v284 then
+        table.insert(u282, {
+            model = v284:Clone(),
+            parent = v284.Parent,
+        })
+        v284:Destroy()
+    end
+end
+local function u290()
+    local v286, v287, v288 = ipairs(u282)
+
+    while true do
+        local v289
+
+        v288, v289 = v286(v287, v288)
+
+        if v288 == nil then
+            break
+        end
+        if v289.model.Parent == nil then
+            v289.model.Parent = v289.parent
+        end
+    end
+
+    u282 = {}
+end
+
+v5.Robberies:AddToggle('RemoveTurrets', {
+    Title = 'Remove Turrets',
+    Default = false,
+    Callback = function(p291)
+        if p291 then
+            u285()
+        else
+            u290()
+        end
+    end,
+})
+v5.Robberies:AddSection('CargoShip')
+
+local u292 = {}
+
+local function u296()
+    local _CargoShip = _Workspace:FindFirstChild('CargoShip')
+
+    if _CargoShip then
+        local _TurretBack = _CargoShip:FindFirstChild('TurretBack')
+        local _TurretFront = _CargoShip:FindFirstChild('TurretFront')
+
+        if _TurretBack and _TurretFront then
+            table.insert(u292, {
+                back = _TurretBack:Clone(),
+                front = _TurretFront:Clone(),
+                parent = _TurretBack.Parent,
+            })
+            _TurretBack:Destroy()
+            _TurretFront:Destroy()
+        end
+    end
+end
+local function u301()
+    local v297, v298, v299 = ipairs(u292)
+
+    while true do
+        local v300
+
+        v299, v300 = v297(v298, v299)
+
+        if v299 == nil then
+            break
+        end
+        if v300.back.Parent == nil then
+            v300.back.Parent = v300.parent
+        end
+        if v300.front.Parent == nil then
+            v300.front.Parent = v300.parent
+        end
+    end
+
+    u292 = {}
+end
+
+v5.Robberies:AddToggle('RemoveTurretsCargoShip', {
+    Title = 'Remove Turrets',
+    Default = false,
+    Callback = function(p302)
+        if p302 then
+            u296()
+        else
+            u301()
+        end
+    end,
+})
+v5.Robberies:AddSection('Airdrop')
+
+local u303 = nil
+
+local function u307(p304)
+    local _Drop = p304:FindFirstChild('Drop')
+    local v306 = _Drop and _Drop:FindFirstChild('NPCs')
+
+    if v306 then
+        u303 = v306:Clone()
+
+        v306:Destroy()
+    end
+end
+local function u308()
+    if u303 then
+        u303.Parent = workspace.Drop
+        u303 = nil
+    end
+end
+
+v5.Robberies:AddToggle('DisableNPCs', {
+    Title = 'Remove NPCs',
+    Default = false,
+    Callback = function(p309)
+        if p309 then
+            u307(workspace)
+        else
+            u308()
+        end
+    end,
+})
+
+local u310 = false
+
+v5.Misc:AddToggle('Infinite Jump', {
+    Title = 'Infinite Jump',
+    Default = false,
+}):OnChanged(function(p311)
+    u310 = p311
+end)
+game:GetService('UserInputService').JumpRequest:Connect(function()
+    if u310 then
+        game:GetService('Players').LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState('Jumping')
+    end
+end)
+
+local u312 = false
+
+v5.Misc:AddToggle('Click TP', {
+    Title = 'Click TP',
+    Default = false,
+}):OnChanged(function(p313)
+    u312 = p313
+end)
+
+local _UserInputService = game:GetService('UserInputService')
+local _LocalPlayer4 = game:GetService('Players').LocalPlayer
+
+_UserInputService.InputBegan:Connect(function(p316)
+    if u312 and p316.UserInputType == Enum.UserInputType.MouseButton1 then
+        local _Position2 = _LocalPlayer4:GetMouse().Hit.Position
+
+        _LocalPlayer4.Character:MoveTo(_Position2)
+    end
+end)
